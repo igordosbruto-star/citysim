@@ -33,15 +33,15 @@ cmake --build build --config Release
 ```
 
 ## 📚 Documentação
-`Visão do Projeto` - (VISION.md) - Diretrizes de design e escopo
-`Roadmap` - (ROADMAP.md) - Marcos de desenvolvimento detalhados
-`Guia de Contribuição` - (CONTRIBUTING.md) - Como contribuir
-`Configuração` - (SETUP.md) - Guia de instalação completo
+`Visão do Projeto` - [VISION.md] - Diretrizes de design e escopo.
+`Roadmap` - (ROADMAP.md) - Marcos de desenvolvimento detalhados.
+`Guia de Contribuição` - (CONTRIBUTING.md) - Como contribuir.
+`Configuração` - (SETUP.md) - Guia de instalação completo.
 
 ## 🛠️ Tecnologias
-`C++20` - Linguagem principal
-`SFML 3` - Gráficos, áudio e input
-`wxWidgets` - Interface do editor
-`ECS (entt)` - Sistema de entidades e componentes
-`JSON` - Configurações e save games
-`Lua` - Scripting e mods
+`C++20` - Linguagem principal.
+`SFML 3` - Gráficos, áudio e input.
+`wxWidgets` - Interface do editor.
+`ECS (entt)` - Sistema de entidades e componentes.
+`JSON` - Configurações e save games.
+`Lua` - Scripting e mods.
