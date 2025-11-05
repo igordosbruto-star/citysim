@@ -96,7 +96,8 @@ cmake --build build --config Release
 
 **Exemplo de Teste Unitário**
 
-TEST_CASE("TechTree Unlock Validation") {
+TEST_CASE("TechTree Unlock Validation") 
+{
     TechTreeSystem techTree;
     techTree.unlockTechnology("basic_roads");
     
