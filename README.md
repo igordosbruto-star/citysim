@@ -33,14 +33,10 @@ cmake --build build --config Release
 ```
 
 ## 📚 Documentação
-```txt
-`Visão do Projeto`  - Diretrizes de design e escopo.
-`Roadmap` - Marcos de desenvolvimento detalhados.
-`Guia de Contribuição` - Como contribuir.
-`Configuração` - Guia de instalação completo.
-```
-
-[neste link para o arquivo alvo](./docs/ROADMAP.md).
+[Visão do Projeto](./docs/VISION.md). - Diretrizes de design e escopo.
+[RoadMap](./docs/ROADMAP.md). - Marcos de desenvolvimento detalhados.
+[Guia de Contribuição](./docs/CONTRIBUTING.md). - Como contribuir.
+[Configuração](./docs/SETUP.md). - Guia de instalação completo.
 
 ## 🛠️ Tecnologias
 `C++20` - Linguagem principal.
