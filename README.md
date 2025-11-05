@@ -3,7 +3,7 @@
 **Construa do zero. Evolua com sabedoria.**
 
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
-[![SFML](https://img.shields.io/badge/SFML-2.5-green.svg)](https://www.sfml-dev.org/)
+[![SFML](https://img.shields.io/badge/SFML-3.0-green.svg)](https://www.sfml-dev.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Um jogo de simulação urbana 2D em pixel art top-down com sistema de tech-tree progressiva.
