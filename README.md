@@ -44,8 +44,13 @@ cmake --build build --config Release
 
 ## 🛠️ Tecnologias
 `C++20` - Linguagem principal.
+
 `SFML 3` - Gráficos, áudio e input.
+
 `wxWidgets` - Interface do editor.
+
 `ECS (entt)` - Sistema de entidades e componentes.
+
 `JSON` - Configurações e save games.
+
 `Lua` - Scripting e mods.
