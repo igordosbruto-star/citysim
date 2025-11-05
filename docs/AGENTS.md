@@ -110,8 +110,9 @@ TEST_CASE("TechTree Unlock Validation")
 ## Desenvolvimento
 
 # Configuração inicial
-
- cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg_root]/scripts/buildsystems/vcpkg.cmake
+```
+cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg_root]/scripts/buildsystems/vcpkg.cmake
+```
 
 # Build e execução
 cmake --build build --config Debug
