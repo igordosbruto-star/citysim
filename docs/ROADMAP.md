@@ -46,6 +46,8 @@ Estabelecer o núcleo técnico e a base estrutural do projeto em C++ com SFML.
 - Estrutura ECS (Entity Component System) inicial para gerenciar entidades.  
 - Sistema de input e atualização de entidades por frame.  
 - Prova de conceito com mapa estático renderizado.  
+- Estrutura base do editor (wxWidgets, OpenGL, GLEW).
+- Janela principal do editor com painéis básicos.
 
 ### ✅ Definition of Done
 - Projeto compila e roda a 60 FPS em mapa 2D.  
@@ -53,6 +55,8 @@ Estabelecer o núcleo técnico e a base estrutural do projeto em C++ com SFML.
 - Um tilemap é carregado e exibido corretamente.  
 - Estrutura ECS reconhece e atualiza entidades genéricas (ex: “Edifício”, “Cidadão”, “Veículo”).  
 - Build estável e versionado no repositório.  
+- Editor compila e abre uma janela com painéis vazios.
+- Comunicação básica entre editor e motor do jogo.
 
 ---
 
@@ -66,12 +70,16 @@ Permitir que o jogador interaja com o mapa e construa elementos básicos.
 - UI inicial com botões de seleção e feedback visual.  
 - Armazenamento de mapa em formato de dados (JSON ou binário).  
 - Primeiros efeitos visuais de feedback (sombras, seleção, partículas leves).  
+- Ferramentas de edição de mapas no editor (pincel, borracha, preenchimento).
+- Painel de propriedades para edição de tiles e zonas.
 
 ### ✅ Definition of Done
 - Jogador pode construir e remover zonas livremente.  
 - Zonas são salvas e carregadas corretamente.  
 - Interface responde instantaneamente às ações do jogador.  
 - Nenhum crash crítico durante 10 minutos de uso contínuo.  
+- Editor permite carregar, editar e salvar mapas. 
+- Ferramentas de edição respondem em tempo real.
 
 ---
 
@@ -84,13 +92,17 @@ Implementar as fundações dos sistemas urbanos essenciais para a simulação.
 - Sistema de abastecimento de água (estações e encanamento básico).  
 - Sistema de coleta de lixo e poluição.  
 - Overlays visuais para cada sistema (exibição de cobertura).  
-- Indicadores simples de falha (ex: ícone “sem energia”).     
+- Indicadores simples de falha (ex: ícone “sem energia”).
+- Editor de redes de energia e água
+- Overlays no editor para mostrar redes
 
 ### ✅ Definition of Done
 - Cada sistema opera de forma independente e visualizável via overlay.  
 - Cidades pequenas funcionam com equilíbrio energético e hídrico.  
 - Poluição afeta a satisfação dos cidadãos.  
 - Todos os dados persistem entre saves.  
+- Editor permite colocar e conectar usinas, tubulações, etc.
+- Overlays mostram a cobertura dos sistemas
 
 ---
 
@@ -110,9 +122,12 @@ Implementar a estrutura fundamental do sistema de tecnologia e integrar com sist
 - Sistema de desbloqueio para 5-10 tecnologias fundamentais
 - Integração com construção - algumas construções requerem techs específicas
 - Sistema de pontos de pesquisa básico (geração e consumo)
+- Editor de tech-tree básico (adicionar nós, conexões)
+- Visualização da árvore tecnológica no editor
 
 🎮 Tecnologias Iniciais Propostas:
 
+```txt
 Tecnologias Básicas (Raiz) - DESBLOQUEADAS
 ├── Infraestrutura
 │   ├→ Estradas Básicas [Nova]
@@ -122,6 +137,7 @@ Tecnologias Básicas (Raiz) - DESBLOQUEADAS
     ├→ Residencial Básico [Desbloqueado]
     ├→ Comercial Básico [Desbloqueado]
     └→ Industrial Básico [Desbloqueado]
+```
 
 ✅ Definition of Done
 - Jogador pode abrir a interface de tech-tree (tecla T)
@@ -130,6 +146,8 @@ Tecnologias Básicas (Raiz) - DESBLOQUEADAS
 - 3 construções exigem tecnologias específicas para serem builtadas
 - Save/Load preserva estado da tech-tree
 - UI responsiva e intuitiva para navegação básica
+- Editor permite criar e editar tecnologias
+- Pré-requisitos podem ser definidos visualmente
 
 ---
 
@@ -143,6 +161,8 @@ Implementar a simulação fundamental de cidadãos e sistema econômico mínimo 
 - HUD de orçamento simplificado (receita/despesa/saldo).
 - Crescimento populacional baseado em disponibilidade de empregos e moradias.
 - Sistema de felicidade básico (emprego, moradia, serviços essenciais).
+- Editor de atributos de cidadãos e edifícios
+- Painel de estatísticas da cidade no editor
 
 ### ✅ Definition of Done
 - Cidadãos são gerados conforme zoneamento residencial disponível.
@@ -150,6 +170,8 @@ Implementar a simulação fundamental de cidadãos e sistema econômico mínimo 
 - População cresce/decresce baseado em fatores básicos de satisfação.
 - Feedback visual básico (ícones de felicidade sobre zonas).
 - FPS mantido ≥ 50 em simulações com 5k habitantes.
+- Editor permite ajustar parâmetros de simulação
+- Estatísticas são atualizadas em tempo real
 
 ---
 
@@ -163,6 +185,8 @@ Implementar sistema de tráfego e transporte que afeta a eficiência da cidade.
 - Indicadores de congestionamento e eficiência de rotas.
 - Ferramentas básicas de gestão de tráfego (estradas de mão dupla/única).
 - Overlay de tráfego para visualização de fluxo.
+- Editor de rotas e tráfego
+- Ferramentas de desenho de estradas e definição de sentidos
 
 ### ✅ Definition of Done
 - Veículos trafegam entre zonas de forma realista.
@@ -171,6 +195,8 @@ Implementar sistema de tráfego e transporte que afeta a eficiência da cidade.
 - **Otimização:** Máximo 500 veículos simulados simultaneamente
 - **Performance:** FPS ≥ 45 com tráfego ativo (5k habitantes)
 - Jogador pode identificar e solucionar problemas básicos de tráfego.
+- Editor permite desenhar estradas e configurar tráfego
+- Simulação de tráfego pode ser visualizada no editor
 
 
 
@@ -189,6 +215,8 @@ Expandir para 25 tecnologias com efeitos de gameplay simples e balanceamento ini
 - Fontes de pesquisa adicionais (edifícios educacionais básicos)
 - Sistema de especialização inicial (2 ramos por categoria)
 - UI melhorada com tooltips e feedback visual
+- Editor de tech-tree expandido (25 tecnologias)
+- Ferramentas de balanceamento no editor
 
 ### ✅ Definition of Done
 - 25 tecnologias implementadas e testadas
@@ -196,6 +224,8 @@ Expandir para 25 tecnologias com efeitos de gameplay simples e balanceamento ini
 - Balanceamento: nenhuma tecnologia claramente superior
 - UI permite navegação fácil entre 25+ tecnologias
 - Save/Load funciona com estado expandido
+- Editor suporta 25 tecnologias com todos os atributos
+- Balanceamento pode ser ajustado via editor
 
 ---
 
@@ -220,12 +250,15 @@ Expandir e aprofundar o sistema de tecnologia com ramificações estratégicas, 
  - Universidades e centros de pesquisa
  - Eventos aleatórios
  - Conquistas de população
+- Editor de tech-tree avançado (50 tecnologias, ramificações)
+- Ferramentas de teste de balanceamento no editor
 
 - Sistema de especialização - árvores focadas em diferentes estilos de jogo
 - UI polida com tooltips detalhados, arte temática e feedback visual rico
 
 🎮 Exemplo de Ramificações:
 
+```txt
 Energia →
 ├── Ramo Verde: Solar → Eólica → Nuclear Limpa
 └── Ramo Tradicional: Carvão → Petróleo → Nuclear
@@ -233,6 +266,7 @@ Energia →
 Transporte →
 ├── Ramo Individual: Carros → Rodovias → Auto-estradas
 └── Ramo Coletivo: Ônibus → Metrô → Trens-bala
+```
 
 ✅ Definition of Done
 - Todas as 45+ tecnologias implementadas e balanceadas
@@ -242,6 +276,8 @@ Transporte →
 - UI/UX polida com feedback imediato das consequências
 - Save/Load mantém todo o estado complexo da tech-tree
 - Performance: carregamento da tech-tree em < 2 segundos
+- Editor suporta ramificações e efeitos complexos
+- Testes de balanceamento podem ser rodados no editor
 
 ---
 
@@ -254,12 +290,17 @@ Adicionar complexidade e imersão por meio de serviços e eventos emergentes.
 - Modelagem de alcance de serviços e tempo de resposta.  
 - Sistema de desastres configurável (fogo, inundação, terremoto).  
 - Notificações e alertas visuais/sonoros de eventos.  
+- Editor de serviços públicos (bombeiros, polícia, etc.)
+- Editor de eventos de desastres
+
 
 ### ✅ Definition of Done
 - Todos os serviços funcionam e impactam o bem-estar dos cidadãos.  
 - Desastres afetam infraestrutura e exigem respostas adequadas.  
 - Configuração “on/off” de desastres acessível via menu.  
 - Cidades resilientes recompensam o jogador com bônus de satisfação.  
+- Editor permite colocar e configurar serviços
+- Eventos de desastres podem ser criados e configurados
 
 ---
 
@@ -273,12 +314,16 @@ Transformar a cidade em um espaço vivo e cativante.
 - Efeitos climáticos (chuva, neve, partículas).  
 - Sons ambientes e trilha sonora procedural.  
 - Animações leves nos edifícios e sprites dinâmicos.  
+- Editor de efeitos visuais (dia/noite, clima)
+- Preview de iluminação e partículas no editor
 
 ### ✅ Definition of Done
 - Atmosfera muda visivelmente com o tempo.  
 - Sons e clima reagem ao estado da cidade.  
 - Nenhum impacto perceptível no desempenho (FPS > 50 em média).  
 - Visual consistente e coeso em todos os biomas.  
+- Editor permite ajustar ciclos e efeitos climáticos
+- Preview mostra as mudanças em tempo real
 
 ---
 
@@ -291,12 +336,16 @@ Aperfeiçoar a experiência do jogador com clareza, onboarding e fluidez.
 - Tutorial interativo “Acampamento da Independência”.  
 - Sistema de dicas contextuais.  
 - Indicadores animados para ações importantes.  
+- Editor de interface de usuário (layouts, temas) 
+- Editor de tutoriais e missões
 
 ### ✅ Definition of Done
 - Jogadores conseguem jogar sem instruções externas.  
 - Tutorial completo em até 10 minutos.  
 - Feedbacks de erro e sucesso claros.  
 - Todos os menus funcionais e sem bugs críticos.  
+- Editor permite criar e editar interfaces de usuário
+- Tutoriais e missões podem ser criados no editor
 
 ---
 
@@ -309,11 +358,15 @@ Testar o jogo de ponta a ponta com público restrito.
 - Ferramentas internas de debug (FPS, logs, estatísticas).  
 - Sistema de feedback interno (relato de bugs e sugestões).  
 - Balanceamento inicial da economia e progressão.  
+- Ferramentas de debug no editor
+- Exportação de builds de teste
 
 ### ✅ Definition of Done
 - Build jogável e estável por 1h sem crash.  
 - Feedback positivo de pelo menos 70% dos testadores.  
 - Lista de bugs priorizada e documentada.  
+- Editor inclui ferramentas para debug e análise de performance
+- Builds de teste podem ser geradas a partir do editor
 
 ---
 
@@ -326,12 +379,16 @@ Preparar o jogo para o público com otimização, identidade e alma.
 - Polimento de UI, música e partículas.  
 - Implementação de conquistas e estatísticas.  
 - Logotipo, menu principal, créditos e branding visual.  
+- Polimento da interface do editor
+- Documentação do editor
 
 ### ✅ Definition of Done
 - FPS estável em todas as resoluções suportadas.  
 - Nenhum bug bloqueante.  
 - Identidade visual e sonora coesa.  
 - Build considerada “Beta Jogável” pronta para distribuição.  
+- Interface do editor é intuitiva e estável
+- Documentação completa do editor está disponível
 
 ---
 
@@ -344,12 +401,16 @@ Lançar a versão pública inicial e planejar futuras expansões.
 - Canal de feedback da comunidade (Discord, formulário, etc).  
 - Patch 1.0.1 (hotfix inicial).  
 - Planejamento de DLCs ou atualizações gratuitas (novos biomas, políticas, tecnologias).  
+- Lançamento do editor junto com o jogo
+- Suporte a mods via editor
 
 ### ✅ Definition of Done
 - Jogo publicado e funcional.  
 - Comunidade ativa com suporte básico.  
 - Relatórios de crash monitorados e corrigidos.  
-- Roadmap futuro (v1.1+) documentado.  
+- Roadmap futuro (v1.1+) documentado. 
+- Editor está estável e pronto para uso pela comunidade
+- Sistema de modding integrado ao editor 
 
 ---
 

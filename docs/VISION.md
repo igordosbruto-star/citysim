@@ -66,7 +66,7 @@ O loop principal de construir -> observar consequências -> ajustar -> ver a cid
 **Evolução Visual**: Cidade muda esteticamente conforme tecnologia avança
 
 ### 4.7. Estrutura da Árvore Tecnológica (exemplo)
-
+```txt
 Tecnologias Básicas (Raiz)
 ├── Infraestrutura
 │   ├→ Estradas Básicas → Asfaltamento → Avenidas
@@ -80,6 +80,7 @@ Tecnologias Básicas (Raiz)
     ├→ Corpo de Bombeiros → Sistema de Prevenção
     ├→ Polícia Municipal → Centro de Monitoramento
     └── Educação Básica → Universidades → Polo Científico
+```
 
 ### 4.8. Sistema de Progressão e Pesquisa
 **Mecânica Unificada:**
@@ -89,6 +90,29 @@ Tecnologias Básicas (Raiz)
 
 **Pré-requisitos:** Tecnologias anteriores necessárias para avançar
 **Especialização:** Escolhas de ramo tecnológico criam cidades únicas
+
+### 4.9. Editor Integrado de Cidades
+**"Crie, edite e experimente sem limites"**
+O CitySimulator inclui um editor completo construído com wxWidgets e OpenGL para criação e modificação de cidades, tecnologias e conteúdo do jogo.
+
+**Funcionalidades do Editor:**
+- Edição Visual de Mapas: Ferramentas de pintura de tiles, zoneamento e terreno
+- Editor de Tech-Tree: Criação e balanceamento de tecnologias visualmente
+- Gerenciador de Edifícios: Definição de propriedades, custos e efeitos
+- Sistema de Camadas: Trabalhe com múltiplas layers (terreno, zonas, decorações)
+- Preview em Tempo Real: Veja as mudanças refletidas instantaneamente
+- Exportação/Importação: Compartilhe mapas e configurações com a comunidade
+
+**Integração com o Jogo:**
+- Mesmo motor de renderização (SFML/OpenGL)
+- Compartilhamento de assets e configurações
+- Teste rápido de modificações no simulador
+- Sistema de modding integrado
+
+**Público-Alvo:**
+- Desenvolvedores: Criação rápida de protótipos e conteúdo
+- Modders: Ferramentas acessíveis para comunidade
+- Jogadores Criativos: Criação de cidades personalizadas e cenários
 
 ## 5.) Direção de Arte & SFML
 ### 5.1. Estilo Visual Top-Down
@@ -105,6 +129,7 @@ Tecnologias Básicas (Raiz)
 - Cores para indicar zoneamento (verde=residencial, azul=comercial, amarelo=industrial).
 - Overlays (poluição, tráfego, valores de terreno) para diagnosticar problemas.
 - Ícones de bolha sobre os edifícios mostrando necessidades (e.g., um ícone de "luz" para "sem energia").
+- **Editor**: Interface profissional com painéis dockables, toolbars customizáveis, sistema de atalhos
 
 ## 6.) Arquitetura Técnica (C++)
 ### 6.1. Motor e Bibliotecas
@@ -113,6 +138,8 @@ Tecnologias Básicas (Raiz)
 **Áudio**: SFML Audio
 
 ### 6.2. Módulos Principais (exemplos)
+```cpp
+// Sistema de Pesquisa
 class TechTreeSystem {
     std::map<TechID, Technology> technologies;
     std::set<TechID> unlockedTechs;
@@ -129,6 +156,18 @@ public:
     void applyDynamicLighting();  // Iluminação dinâmica dia/noite
 };
 
+// Sistema do Editor
+class CityEditor {
+    wxFrame* mainFrame;
+    MapManager mapManager;
+    TechTreeEditor techTreeEditor;
+    BuildingEditor buildingEditor;
+public:
+    void loadMap(const std::string& filename);
+    void saveMap(const std::string& filename);
+    void previewInSimulator();  // Integração direta com o jogo
+};
+```
 
 ### 6.3. Estruturas de Dados Chave
 **TileMap**: Matriz 2D para armazenar o terreno, zonas e edifícios.
@@ -136,9 +175,9 @@ public:
 **Grafos**: Para pathfinding de veículos e cidadãos (A* algorithm).
 
 ## 7.) Visão do Roadmap de Desenvolvimento
-**Fase de Fundação** (Marcos 1-3): Motor SFML, construção básica, sistemas vitais
-**Fase de Expansão** (Marcos 3.5-4.8): Tech-tree progressiva, população, tráfego
-**Fase de Polimento** (Marcos 5-11): Tech-tree avançada, serviços, UX, lançamento
+**Fase de Fundação** (Marcos 1-3): Motor SFML, construção básica, sistemas vitais, editor básico
+**Fase de Expansão** (Marcos 3.5-4.8): Tech-tree progressiva, população, tráfego, editor completo
+**Fase de Polimento** (Marcos 5-11): Tech-tree avançada, serviços, UX, editor refinado, lançamento
 *Para detalhes técnicos completos, consulte [ROADMAP.md](ROADMAP.md)*
 
 ## 8.) Exemplo de Fluxo de Jogo
