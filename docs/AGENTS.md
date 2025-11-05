@@ -95,7 +95,7 @@ cmake --build build --config Release
 - Save/Load: dados persistindo sem corrupção
 
 **Exemplo de Teste Unitário**
-
+```
 TEST_CASE("TechTree Unlock Validation") 
 {
     TechTreeSystem techTree;
@@ -104,6 +104,7 @@ TEST_CASE("TechTree Unlock Validation")
     REQUIRE(techTree.isUnlocked("basic_roads") == true);
     REQUIRE(techTree.canUnlock("advanced_roads") == false); // precisa de pré-requisitos
 }
+```
 
 ### 🛠️ Comandos Padrão (CLI)
 
@@ -115,30 +116,44 @@ cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg_root]/scripts/buildsystems/vcpkg.cm
 ```
 
 # Build e execução
+```
 cmake --build build --config Debug
 ./build/CitySimulator
+```
 
 # Build de release
+```
 cmake --build build --config Release
+```
 
 ## Testes e Qualidade
 
 # Rodar testes unitários
+```
 cd build && ctest --output-on-failure
+```
 
 # Verificar vazamentos de memória (Linux)
+```
 valgrind --leak-check=full ./CitySimulator
+```
 
 # Análise estática (opcional)
+```
 cppcheck --enable=all src/
+```
 
 ## Utilitários
 
 # Gerar documentação (quando implementado)
+```
 doxygen Doxyfile
+```
 
 # Formatação de código (quando configurado)
+```
 clang-format -i src/**/*.cpp include/**/*.hpp
+```
 
 ### 📋 Checklist para Agentes
 
