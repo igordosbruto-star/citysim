@@ -34,6 +34,7 @@ src/
 ### C++17 com SFML
 
 // ✅ CORRETO - Estilo preferido
+```
 class CitySimulator {
 public:
     void updateSimulation(float deltaTime);
@@ -43,12 +44,15 @@ private:
     std::unique_ptr<TechTreeSystem> m_techTree;
     std::vector<Citizen> m_citizens;
 };
+```
 
 // ❌ EVITAR - Estilo antigo
+```
 class old_style {
     public:
     void UpdateSimulation(float DeltaTime);
 };
+```
 
 ### Convenções de Nomenclatura
 Classes: PascalCase → TechTreeSystem, CitizenManager
@@ -59,19 +63,23 @@ Constantes: UPPER_CASE → MAX_VEHICLES, TILE_SIZE
 ### Diretrizes ECS
 
 // Componentes devem ser dados puros
+```
 struct CitizenComponent {
     sf::Vector2f homePosition;
     sf::Vector2f workPosition;
     float happiness = 0.0f;
     CitizenState state = CitizenState::Idle;
 };
+```
 
 // Sistemas processam lógica
+```
 class CitizenSystem : public System {
 public:
     void update(float deltaTime) override;
     void updateCitizenPaths();
 };
+```
 
 ## 🧪 Testes Mínimos (por PR)
 
@@ -79,9 +87,10 @@ public:
 Cada PR deve garantir:
 
 **1- Compilação Limpa**
-
+```
 cmake --build build --config Debug
 cmake --build build --config Release
+```
 
 **2- Performance Básica**
 - 60 FPS em cena vazia
