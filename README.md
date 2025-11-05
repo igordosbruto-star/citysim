@@ -2,7 +2,7 @@
 Engine for city simulator games.
 
 ## References
- - Sim CIty 2000.
+ - Sim City 2000.
  - Cities Skylines.
  - RPG Maker.
 
