@@ -14,6 +14,7 @@ Este documento estabelece padrões e diretrizes para assistentes de IA contribu�
 ## 🏗️ Estrutura Útil (Referência)
 
 ### Arquitetura do Projeto
+```
 src/
 ├── core/ # Núcleo do motor (ECS, sistemas base)
 ├── rendering/ # Renderização SFML (tilemaps, sprites)
@@ -21,6 +22,7 @@ src/
 ├── tech_tree/ # Sistema de tecnologia e pesquisa
 ├── ui/ # Interface do usuário
 └── utils/ # Utilitários (JSON, math, helpers)
+```
 
 ### Entidades Principais (ECS)
 - `CityComponent` - Dados da cidade
@@ -34,7 +36,7 @@ src/
 ### C++17 com SFML
 
 // ✅ CORRETO - Estilo preferido
-```
+```cpp
 class CitySimulator {
 public:
     void updateSimulation(float deltaTime);
@@ -47,7 +49,7 @@ private:
 ```
 
 // ❌ EVITAR - Estilo antigo
-```
+```cpp
 class old_style {
     public:
     void UpdateSimulation(float DeltaTime);
@@ -55,15 +57,17 @@ class old_style {
 ```
 
 ### Convenções de Nomenclatura
+```
 Classes: PascalCase → TechTreeSystem, CitizenManager
 Funções: camelCase → calculateHappiness(), updatePopulation()
 Variáveis: camelCase → currentPopulation, researchPoints
 Constantes: UPPER_CASE → MAX_VEHICLES, TILE_SIZE
+```
 
 ### Diretrizes ECS
 
 // Componentes devem ser dados puros
-```
+```cpp
 struct CitizenComponent {
     sf::Vector2f homePosition;
     sf::Vector2f workPosition;
@@ -73,7 +77,7 @@ struct CitizenComponent {
 ```
 
 // Sistemas processam lógica
-```
+```cpp
 class CitizenSystem : public System {
 public:
     void update(float deltaTime) override;
@@ -87,7 +91,7 @@ public:
 Cada PR deve garantir:
 
 **1- Compilação Limpa**
-```
+```bash
 cmake --build build --config Debug
 cmake --build build --config Release
 ```
@@ -104,7 +108,7 @@ cmake --build build --config Release
 - Save/Load: dados persistindo sem corrupção
 
 **Exemplo de Teste Unitário**
-```
+```cpp
 TEST_CASE("TechTree Unlock Validation") 
 {
     TechTreeSystem techTree;
@@ -118,49 +122,36 @@ TEST_CASE("TechTree Unlock Validation")
 ### 🛠️ Comandos Padrão (CLI)
 
 ## Desenvolvimento
-
+```bash
 # Configuração inicial
-```
 cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg_root]/scripts/buildsystems/vcpkg.cmake
-```
 
 # Build e execução
-```
 cmake --build build --config Debug
 ./build/CitySimulator
-```
 
 # Build de release
-```
 cmake --build build --config Release
 ```
 
 ## Testes e Qualidade
-
+```bash
 # Rodar testes unitários
-```
 cd build && ctest --output-on-failure
-```
 
 # Verificar vazamentos de memória (Linux)
-```
 valgrind --leak-check=full ./CitySimulator
-```
 
 # Análise estática (opcional)
-```
 cppcheck --enable=all src/
 ```
 
 ## Utilitários
-
+```bash
 # Gerar documentação (quando implementado)
-```
 doxygen Doxyfile
-```
 
 # Formatação de código (quando configurado)
-```
 clang-format -i src/**/*.cpp include/**/*.hpp
 ```
 
