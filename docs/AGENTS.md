@@ -33,7 +33,7 @@ src/
 
 ## 💻 Padrões de Código
 
-### C++17 com SFML
+### C++20 com SFML
 
 // ✅ CORRETO - Estilo preferido
 ```cpp
@@ -165,7 +165,7 @@ clang-format -i src/**/*.cpp include/**/*.hpp
 
 ## Durante Desenvolvimento
 
-- Seguir padrões de código C++17/SFML
+- Seguir padrões de código C++20/SFML
 - Manter performance (60 FPS target)
 - Implementar testes mínimos
 - Documentar mudanças significativas
@@ -188,7 +188,7 @@ clang-format -i src/**/*.cpp include/**/*.hpp
 - SFML para gráficos/áudio/input
 - ECS para gerenciamento de entidades
 - JSON para dados de configuração
-- C++17 como versão mínima
+- C++20 como versão mínima
 
 ## Padrões de Qualidade
 - Código deve ser auto-documentado

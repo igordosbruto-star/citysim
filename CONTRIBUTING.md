@@ -10,7 +10,7 @@ Este guia explica como propor ideias, reportar bugs e enviar PRs de forma eficie
 - **Sistemas de jogo**: sugestões para tech-tree, simulação, economia ou UI.
 
 ## Requisitos básicos
-- **Linguagem**: C++17
+- **Linguagem**: C++20
 - **Build**: CMake
 - **Gráficos/Audio/Input**: SFML
 - **ECS**: Entity Component System (entt)
