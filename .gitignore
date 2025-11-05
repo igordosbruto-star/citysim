@@ -54,6 +54,7 @@ ipch/
 *.dylib
 *.log
 *.cache
+*.bat
 
 # ==== IDEs diversas ====
 .idea/

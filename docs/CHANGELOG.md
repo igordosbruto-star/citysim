@@ -8,6 +8,7 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Estrutura inicial da documentação do projeto.
 - Sistema de build com CMake para jogo e editor
 - Configuração completa do editor (wxWidgets + OpenGL)
+- Arquivos base e headers da aplicação. `Application.cpp`, `Game.cpp`, `Config.cpp`
 
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
