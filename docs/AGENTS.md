@@ -1,92 +1,186 @@
-# AGENTS.md — Guia para agentes (Codex/assistentes)
+# AGENTS.md — City Simulator
 
-> Este documento orienta agentes automáticos ao contribuir no repositório.  
-> Fontes de verdade: `VISION.md`, `ROADMAP.md`, `CONTRIBUTING.md`, `CHANGELOG.md`.
+Diretrizes para assistentes de IA trabalharem no projeto City Simulator.
 
-## Objetivo
-- Automatizar tarefas repetitivas sem quebrar padrões do projeto.
-- Sempre priorizar o que está no **ROADMAP** e registrar mudanças no **CHANGELOG** (em `[Unreleased]`).
+## 🎯 Objetivo
+Este documento estabelece padrões e diretrizes para assistentes de IA contribuírem consistentemente no desenvolvimento do City Simulator, garantindo alinhamento com a visão do projeto e qualidade de código.
 
-## Setup rápido
-- Windows + MSVC 2022 com CMake ≥ 3.25 e vcpkg (manifest).
-- Abra o repo no VS Code com CMake Tools. O manifest baixa dependências automaticamente no primeiro configure.
+## 📚 Fontes de Verdade
+- **`VISION.md`** - Diretrizes de design, escopo e filosofia do jogo
+- **`ROADMAP.md`** - Marcos de desenvolvimento e prioridades
+- **`CONTRIBUTING.md`** - Processos de contribuição e padrões
+- **`CHANGELOG.md`** - Histórico de mudanças e versionamento
 
-## Ambiente & Build
-- **SO/Toolchain:** Windows, MSVC 2022, CMake ≥ 3.25, vcpkg (manifest).
-- **Presets obrigatórios (CMakePresets.json):**
-  - `configurePreset`: `msvc-vcpkg`
-  - `buildPreset`: `msvc-Debug` (ou `msvc-Release` quando solicitado)
-- **Executável principal:** `citysimulator`.
+## 🏗️ Estrutura Útil (Referência)
 
-## Comandos padrão (CLI)
-cmake --preset msvc-vcpkg
-cmake --build build/msvc --config Debug
+### Arquitetura do Projeto
+src/
+├── core/ # Núcleo do motor (ECS, sistemas base)
+├── rendering/ # Renderização SFML (tilemaps, sprites)
+├── simulation/ # Sistemas de simulação (cidadãos, economia)
+├── tech_tree/ # Sistema de tecnologia e pesquisa
+├── ui/ # Interface do usuário
+└── utils/ # Utilitários (JSON, math, helpers)
 
-# binário resultante:
-# build/msvc/bin/Debug/citysimulator.exe
+### Entidades Principais (ECS)
+- `CityComponent` - Dados da cidade
+- `CitizenComponent` - Cidadãos com necessidades e rotinas
+- `BuildingComponent` - Edifícios e zonas
+- `VehicleComponent` - Veículos em tráfego
+- `TechnologyComponent` - Tecnologias da tech-tree
 
-## Execução no VS Code (F5)
-- CMake: Select Configure Preset → msvc-vcpkg
-- CMake: Select Build Preset → msvc-Debug
-- Selecione o target citysimulator e pressione F5 (Debug).
-- Não gerar build in-source (usar build/msvc dos presets).
+## 💻 Padrões de Código
 
-## Escopo permitido (✅)
-- Ajustes no runtime de exemplo citysimulator (inputs, desenho, logs).
-- Leitura de TMX via tmxlite; impressão de dimensões/camadas.
-- Infra de build (CMake, presets), .vscode/*, docs (VISION/ROADMAP/CHANGELOG/CONTRIBUTING).
-- Refactors pequenos e correções de warnings.
+### C++17 com SFML
 
-## Fora de escopo (❌) — pedir issue/aprovação antes
-- Provas de conceito mínimas.
-- Trocar dependências do vcpkg.json ou versões do SFML/Lua/tmxlite.
-- Quebrar formatos de dados (JSON/TMX) ou APIs “públicas” do projeto.
+// ✅ CORRETO - Estilo preferido
+class CitySimulator {
+public:
+    void updateSimulation(float deltaTime);
+    bool canBuildAt(const sf::Vector2i& position) const;
+    
+private:
+    std::unique_ptr<TechTreeSystem> m_techTree;
+    std::vector<Citizen> m_citizens;
+};
 
+// ❌ EVITAR - Estilo antigo
+class old_style {
+    public:
+    void UpdateSimulation(float DeltaTime);
+};
 
-## Branch/Commits/PRs
-- Branches: agent/<tipo>/<slug-curto>
-ex.: agent/feat/wasd-movement
+### Convenções de Nomenclatura
+Classes: PascalCase → TechTreeSystem, CitizenManager
+Funções: camelCase → calculateHappiness(), updatePopulation()
+Variáveis: camelCase → currentPopulation, researchPoints
+Constantes: UPPER_CASE → MAX_VEHICLES, TILE_SIZE
 
-- Commits: Conventional Commits
-ex.: feat(runtime): mover com WASD no citysimulator
+### Diretrizes ECS
 
-- PRs:
- - Título claro; descrição curta com o “porquê”.
- - Linkar issue/roadmap quando existir (closes #123).
- - Atualizar CHANGELOG ([Unreleased]).
- - Labels: enhancement/bug/docs + area/runtime (ou area/build, area/docs, area/editor) + roadmap quando aplicável.
+// Componentes devem ser dados puros
+struct CitizenComponent {
+    sf::Vector2f homePosition;
+    sf::Vector2f workPosition;
+    float happiness = 0.0f;
+    CitizenState state = CitizenState::Idle;
+};
 
-## Padrões de Código
-- C++20; avisos altos (/W4 MSVC).
-- Respeitar .clang-format (se existir); preferir funções curtas e .cpp separados.
-- SFML 3.x: componentes SFML::Graphics, SFML::Window, SFML::Audio, SFML::System.
-- Não commitar artefatos: build/, bin/, vcpkg_installed/, etc. (ver .gitignore).
+// Sistemas processam lógica
+class CitizenSystem : public System {
+public:
+    void update(float deltaTime) override;
+    void updateCitizenPaths();
+};
 
-## Testes mínimos (por PR)
-- Build Debug sem erros.
-- Executar citysimulator (abrir janela) sem crash.
-- Se tocar TMX: log “TMX carregado” + dimensões/camadas corretas.
+## 🧪 Testes Mínimos (por PR)
 
+### Testes Obrigatórios
+Cada PR deve garantir:
 
-## Tarefas comuns (prioridade sugerida)
-- feat/runtime: mover com WASD no citysimulator.
-- feat/runtime: carregar examples/citysimulator/firsttileset.tmx e imprimir dimensões/camadas.
-- chore/docs: manter CHANGELOG.md e ROADMAP.md atualizados.
-- refactor/build: pequenos ajustes de CMake/presets sem mudar comportamento.
+**1- Compilação Limpa**
 
-## Estrutura útil (referência)
-- src/ código-fonte | include/ headers
-- examples/citysimulator/ assets e TMX de exemplo
-- build/msvc/ saída de build (presets)
-- docs/ documentação do projeto
+cmake --build build --config Debug
+cmake --build build --config Release
 
-## Segurança e Segredos
-- **Nunca** commitar chaves/segredos.
-- **Não** alterar publicação/CI sem aprovação explícita.
+**2- Performance Básica**
+- 60 FPS em cena vazia
+- 45 FPS com 1k entidades
+- Memória estável após 5 minutos
 
-## Fontes de Verdade
-- **CONTRIBUTING.md** — fluxos e padrões gerais.
-- **ROADMAP.md** — prioridades e milestones.
-- **VISION.md** — direção de produto.
-- **CHANGELOG.md** — histórico de mudanças.
+**Funcionalidade Core**
 
+- Tech-tree: desbloqueio e pré-requisitos funcionando
+- ECS: entidades sendo atualizadas corretamente
+- Save/Load: dados persistindo sem corrupção
+
+**Exemplo de Teste Unitário**
+
+TEST_CASE("TechTree Unlock Validation") {
+    TechTreeSystem techTree;
+    techTree.unlockTechnology("basic_roads");
+    
+    REQUIRE(techTree.isUnlocked("basic_roads") == true);
+    REQUIRE(techTree.canUnlock("advanced_roads") == false); // precisa de pré-requisitos
+}
+
+### 🛠️ Comandos Padrão (CLI)
+
+## Desenvolvimento
+
+# Configuração inicial
+cmake -B build -DCMAKE_TOOLCHAIN_FILE=[vcpkg_root]/scripts/buildsystems/vcpkg.cmake
+
+# Build e execução
+cmake --build build --config Debug
+./build/CitySimulator
+
+# Build de release
+cmake --build build --config Release
+
+## Testes e Qualidade
+
+# Rodar testes unitários
+cd build && ctest --output-on-failure
+
+# Verificar vazamentos de memória (Linux)
+valgrind --leak-check=full ./CitySimulator
+
+# Análise estática (opcional)
+cppcheck --enable=all src/
+
+## Utilitários
+
+# Gerar documentação (quando implementado)
+doxygen Doxyfile
+
+# Formatação de código (quando configurado)
+clang-format -i src/**/*.cpp include/**/*.hpp
+
+### 📋 Checklist para Agentes
+
+## Antes de Implementar
+
+- Consultar ROADMAP.md para alinhamento com marcos
+- Verificar VISION.md para consistência de design
+- Analisar dependências no CONTRIBUTING.md
+
+## Durante Desenvolvimento
+
+- Seguir padrões de código C++17/SFML
+- Manter performance (60 FPS target)
+- Implementar testes mínimos
+- Documentar mudanças significativas
+
+## Antes de Finalizar
+- Atualizar CHANGELOG.md se necessário
+- Verificar compatibilidade com sistemas existentes
+- Executar comandos de teste padrão
+
+### 🚨 Notas Importantes
+
+## Prioridades do Projeto
+
+- Tech-tree funcional - núcleo da jogabilidade
+- Performance estável - 60 FPS é meta
+- Simulação realista - cidadãos com comportamentos significativos
+- Pixel art consistente - estilo RPG Maker top-down
+
+## Restrições Técnicas
+- SFML para gráficos/áudio/input
+- ECS para gerenciamento de entidades
+- JSON para dados de configuração
+- C++17 como versão mínima
+
+## Padrões de Qualidade
+- Código deve ser auto-documentado
+- Evitar otimizações prematuras
+- Manter compatibilidade com save games
+- Seguir princípios SOLID quando aplicável
+
+---
+
+Última atualização: 04-11-2025
+Manter sincronizado com: VISION.md, ROADMAP.md, CONTRIBUTING.md
+
+---
