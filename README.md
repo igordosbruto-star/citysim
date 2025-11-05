@@ -40,7 +40,7 @@ cmake --build build --config Release
 `Configuração` - Guia de instalação completo.
 ```
 
-(docs/ROADMAP.md)
+[neste link para o arquivo alvo](./docs/ROADMAP.md).
 
 ## 🛠️ Tecnologias
 `C++20` - Linguagem principal.
