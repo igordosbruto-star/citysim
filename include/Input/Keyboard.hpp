@@ -1,17 +1,17 @@
 #pragma once
 
+#include <SFML/Config.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
 #include <cstddef>
-#include <type_traits>
 #include <unordered_set>
 
 namespace CitySim::Input {
 
-struct ScancodeHash {
-    std::size_t operator()(sf::Keyboard::Scancode scancode) const noexcept {
-        return static_cast<std::size_t>(scancode);
+struct KeyHash {
+    std::size_t operator()(sf::Keyboard::Key key) const noexcept {
+        return static_cast<std::size_t>(key);
     }
 };
 
@@ -19,17 +19,22 @@ class Keyboard {
 public:
     void beginFrame();
 
-    void handleEvent(const sf::Event::KeyPressed& event);
-    void handleEvent(const sf::Event::KeyReleased& event);
+#if SFML_VERSION_MAJOR >= 3
+    void handlePressed(const sf::Event::KeyPressed& event);
+    void handleReleased(const sf::Event::KeyReleased& event);
+#else
+    void handlePressed(const sf::Event::KeyEvent& event);
+    void handleReleased(const sf::Event::KeyEvent& event);
+#endif
 
-    bool isPressed(sf::Keyboard::Scancode scancode) const;
-    bool wasPressed(sf::Keyboard::Scancode scancode) const;
-    bool wasReleased(sf::Keyboard::Scancode scancode) const;
+    bool isPressed(sf::Keyboard::Key key) const;
+    bool wasPressed(sf::Keyboard::Key key) const;
+    bool wasReleased(sf::Keyboard::Key key) const;
 
 private:
-    std::unordered_set<sf::Keyboard::Scancode, ScancodeHash> m_pressedKeys;
-    std::unordered_set<sf::Keyboard::Scancode, ScancodeHash> m_justPressed;
-    std::unordered_set<sf::Keyboard::Scancode, ScancodeHash> m_justReleased;
+    std::unordered_set<sf::Keyboard::Key, KeyHash> m_pressedKeys;
+    std::unordered_set<sf::Keyboard::Key, KeyHash> m_justPressed;
+    std::unordered_set<sf::Keyboard::Key, KeyHash> m_justReleased;
 };
 
 } // namespace CitySim::Input

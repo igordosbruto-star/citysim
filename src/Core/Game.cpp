@@ -8,7 +8,6 @@
 #include "Utils/Logger.hpp"
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/System/Angle.hpp>
 
 #include <cmath>
 
@@ -70,9 +69,15 @@ void Game::handleEvent(const sf::Event& event) {
         return;
     }
 
+#if SFML_VERSION_MAJOR >= 3
     if (const auto* resized = event.getIf<sf::Event::Resized>()) {
         onWindowResized(*resized);
     }
+#else
+    if (event.type == sf::Event::Resized) {
+        onWindowResized(event.size);
+    }
+#endif
 }
 
 void Game::update(float deltaTime) {
@@ -80,7 +85,7 @@ void Game::update(float deltaTime) {
         return;
     }
 
-    if (m_inputManager && m_inputManager->keyboard().wasPressed(sf::Keyboard::Scancode::P)) {
+    if (m_inputManager && m_inputManager->keyboard().wasPressed(sf::Keyboard::Key::P)) {
         if (isPaused()) {
             resume();
             LOG_INFO("Jogo retomado");
@@ -124,6 +129,7 @@ void Game::resume() {
     m_simulationClock.restart();
 }
 
+#if SFML_VERSION_MAJOR >= 3
 void Game::onWindowResized(const sf::Event::Resized& resizedEvent) {
     if (!m_debugShapeInitialized) {
         return;
@@ -134,6 +140,18 @@ void Game::onWindowResized(const sf::Event::Resized& resizedEvent) {
         static_cast<float>(resizedEvent.size.y) / 2.0f
     ));
 }
+#else
+void Game::onWindowResized(const sf::Event::SizeEvent& resizedEvent) {
+    if (!m_debugShapeInitialized) {
+        return;
+    }
+
+    m_debugShape.setPosition(sf::Vector2f(
+        static_cast<float>(resizedEvent.width) / 2.0f,
+        static_cast<float>(resizedEvent.height) / 2.0f
+    ));
+}
+#endif
 
 void Game::updateDebugVisual(float deltaTime) {
     constexpr float rotationSpeed = 90.0f; // graus por segundo
@@ -142,7 +160,7 @@ void Game::updateDebugVisual(float deltaTime) {
         m_debugShapeRotation = std::fmod(m_debugShapeRotation, 360.0f);
     }
 
-    m_debugShape.setRotation(sf::degrees(m_debugShapeRotation));
+    m_debugShape.setRotation(m_debugShapeRotation);
 }
 
 } // namespace CitySim

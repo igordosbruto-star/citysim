@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Config.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -51,7 +52,11 @@ public:
     const Graphics::Window& window() const { return *m_window; }
 
 private:
+#if SFML_VERSION_MAJOR >= 3
     void onWindowResized(const sf::Event::Resized& resizedEvent);
+#else
+    void onWindowResized(const sf::Event::SizeEvent& resizedEvent);
+#endif
     void updateDebugVisual(float deltaTime);
 
 private:

@@ -7,31 +7,41 @@ void Keyboard::beginFrame() {
     m_justReleased.clear();
 }
 
-void Keyboard::handleEvent(const sf::Event::KeyPressed& event) {
-    const auto scancode = event.scancode;
-    const bool inserted = m_pressedKeys.insert(scancode).second;
+#if SFML_VERSION_MAJOR >= 3
+void Keyboard::handlePressed(const sf::Event::KeyPressed& event) {
+    const auto key = event.key;
+#else
+void Keyboard::handlePressed(const sf::Event::KeyEvent& event) {
+    const auto key = event.code;
+#endif
+    const bool inserted = m_pressedKeys.insert(key).second;
     if (inserted) {
-        m_justPressed.insert(scancode);
+        m_justPressed.insert(key);
     }
 }
 
-void Keyboard::handleEvent(const sf::Event::KeyReleased& event) {
-    const auto scancode = event.scancode;
-    if (m_pressedKeys.erase(scancode) > 0) {
-        m_justReleased.insert(scancode);
+#if SFML_VERSION_MAJOR >= 3
+void Keyboard::handleReleased(const sf::Event::KeyReleased& event) {
+    const auto key = event.key;
+#else
+void Keyboard::handleReleased(const sf::Event::KeyEvent& event) {
+    const auto key = event.code;
+#endif
+    if (m_pressedKeys.erase(key) > 0) {
+        m_justReleased.insert(key);
     }
 }
 
-bool Keyboard::isPressed(sf::Keyboard::Scancode scancode) const {
-    return m_pressedKeys.find(scancode) != m_pressedKeys.end();
+bool Keyboard::isPressed(sf::Keyboard::Key key) const {
+    return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
 
-bool Keyboard::wasPressed(sf::Keyboard::Scancode scancode) const {
-    return m_justPressed.find(scancode) != m_justPressed.end();
+bool Keyboard::wasPressed(sf::Keyboard::Key key) const {
+    return m_justPressed.find(key) != m_justPressed.end();
 }
 
-bool Keyboard::wasReleased(sf::Keyboard::Scancode scancode) const {
-    return m_justReleased.find(scancode) != m_justReleased.end();
+bool Keyboard::wasReleased(sf::Keyboard::Key key) const {
+    return m_justReleased.find(key) != m_justReleased.end();
 }
 
 } // namespace CitySim::Input

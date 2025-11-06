@@ -2,15 +2,20 @@
 
 #include "Utils/Logger.hpp"
 
-#include <SFML/Window/ContextSettings.hpp>
+#include <SFML/Config.hpp>
+#include <SFML/Window/WindowStyle.hpp>
 
 #include <exception>
 
 namespace CitySim::Graphics {
 
-bool Window::create(const sf::VideoMode& videoMode, const std::string& title, const sf::ContextSettings& settings) {
+bool Window::create(const sf::VideoMode& videoMode, const std::string& title, sf::ContextSettings settings) {
     try {
+#if SFML_VERSION_MAJOR >= 3
         m_window.create(videoMode, title, settings);
+#else
+        m_window.create(videoMode, title, sf::Style::Default, settings);
+#endif
         if (!m_window.isOpen()) {
             LOG_ERROR("Falha ao criar janela: janela não está aberta");
             return false;
@@ -49,7 +54,15 @@ void Window::setKeyRepeatEnabled(bool enabled) {
 }
 
 std::optional<sf::Event> Window::pollEvent() {
+#if SFML_VERSION_MAJOR >= 3
     return m_window.pollEvent();
+#else
+    sf::Event event;
+    if (m_window.pollEvent(event)) {
+        return event;
+    }
+    return std::nullopt;
+#endif
 }
 
 sf::Vector2u Window::getSize() const {

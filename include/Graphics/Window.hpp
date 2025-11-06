@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 
@@ -13,7 +14,7 @@ class Window {
 public:
     Window() = default;
 
-    bool create(const sf::VideoMode& videoMode, const std::string& title, const sf::ContextSettings& settings = {});
+    bool create(const sf::VideoMode& videoMode, const std::string& title, sf::ContextSettings settings = sf::ContextSettings());
     void close();
 
     bool isOpen() const;

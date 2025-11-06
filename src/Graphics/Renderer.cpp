@@ -28,11 +28,11 @@ const sf::View& Renderer::getView() const {
     return target().getView();
 }
 
-sf::RenderTarget& Renderer::target() {
+sf::RenderWindow& Renderer::target() {
     return m_window->nativeHandle();
 }
 
-const sf::RenderTarget& Renderer::target() const {
+const sf::RenderWindow& Renderer::target() const {
     return m_window->nativeHandle();
 }
 

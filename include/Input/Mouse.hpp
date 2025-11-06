@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Config.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -19,10 +20,17 @@ class Mouse {
 public:
     void beginFrame();
 
-    void handleEvent(const sf::Event::MouseButtonPressed& event);
-    void handleEvent(const sf::Event::MouseButtonReleased& event);
-    void handleEvent(const sf::Event::MouseMoved& event);
-    void handleEvent(const sf::Event::MouseWheelScrolled& event);
+#if SFML_VERSION_MAJOR >= 3
+    void handleButtonPressed(const sf::Event::MouseButtonPressed& event);
+    void handleButtonReleased(const sf::Event::MouseButtonReleased& event);
+    void handleMoved(const sf::Event::MouseMoved& event);
+    void handleWheelScrolled(const sf::Event::MouseWheelScrolled& event);
+#else
+    void handleButtonPressed(const sf::Event::MouseButtonEvent& event);
+    void handleButtonReleased(const sf::Event::MouseButtonEvent& event);
+    void handleMoved(const sf::Event::MouseMoveEvent& event);
+    void handleWheelScrolled(const sf::Event::MouseWheelScrollEvent& event);
+#endif
 
     bool isButtonPressed(sf::Mouse::Button button) const;
     bool wasButtonPressed(sf::Mouse::Button button) const;

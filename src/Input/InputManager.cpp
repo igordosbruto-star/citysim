@@ -2,6 +2,8 @@
 
 #include "Graphics/Window.hpp"
 
+#include <SFML/Config.hpp>
+
 namespace CitySim::Input {
 
 void InputManager::beginFrame() {
@@ -10,24 +12,55 @@ void InputManager::beginFrame() {
 }
 
 void InputManager::processEvents(Graphics::Window& window, const std::function<void(const sf::Event&)>& callback) {
-    while (auto event = window.pollEvent()) {
-        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            m_keyboard.handleEvent(*keyPressed);
-        } else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
-            m_keyboard.handleEvent(*keyReleased);
-        } else if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-            m_mouse.handleEvent(*mousePressed);
-        } else if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-            m_mouse.handleEvent(*mouseReleased);
-        } else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
-            m_mouse.handleEvent(*mouseMoved);
-        } else if (const auto* wheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
-            m_mouse.handleEvent(*wheelScrolled);
+    while (auto eventOpt = window.pollEvent()) {
+#if SFML_VERSION_MAJOR >= 3
+        if (const auto* keyPressed = eventOpt->getIf<sf::Event::KeyPressed>()) {
+            m_keyboard.handlePressed(*keyPressed);
+        } else if (const auto* keyReleased = eventOpt->getIf<sf::Event::KeyReleased>()) {
+            m_keyboard.handleReleased(*keyReleased);
+        } else if (const auto* mousePressed = eventOpt->getIf<sf::Event::MouseButtonPressed>()) {
+            m_mouse.handleButtonPressed(*mousePressed);
+        } else if (const auto* mouseReleased = eventOpt->getIf<sf::Event::MouseButtonReleased>()) {
+            m_mouse.handleButtonReleased(*mouseReleased);
+        } else if (const auto* mouseMoved = eventOpt->getIf<sf::Event::MouseMoved>()) {
+            m_mouse.handleMoved(*mouseMoved);
+        } else if (const auto* wheelScrolled = eventOpt->getIf<sf::Event::MouseWheelScrolled>()) {
+            m_mouse.handleWheelScrolled(*wheelScrolled);
         }
 
         if (callback) {
-            callback(*event);
+            callback(*eventOpt);
         }
+#else
+        const sf::Event& event = *eventOpt;
+
+        switch (event.type) {
+        case sf::Event::KeyPressed:
+            m_keyboard.handlePressed(event.key);
+            break;
+        case sf::Event::KeyReleased:
+            m_keyboard.handleReleased(event.key);
+            break;
+        case sf::Event::MouseButtonPressed:
+            m_mouse.handleButtonPressed(event.mouseButton);
+            break;
+        case sf::Event::MouseButtonReleased:
+            m_mouse.handleButtonReleased(event.mouseButton);
+            break;
+        case sf::Event::MouseMoved:
+            m_mouse.handleMoved(event.mouseMove);
+            break;
+        case sf::Event::MouseWheelScrolled:
+            m_mouse.handleWheelScrolled(event.mouseWheelScroll);
+            break;
+        default:
+            break;
+        }
+
+        if (callback) {
+            callback(event);
+        }
+#endif
     }
 }
 
