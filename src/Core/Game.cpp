@@ -1,17 +1,22 @@
 #include "Core/Game.hpp"
 
 #include "Core/Config.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Window.hpp"
+#include "Input/InputManager.hpp"
+#include "Input/Keyboard.hpp"
 #include "Utils/Logger.hpp"
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/System/Angle.hpp>
 
 #include <cmath>
 
 namespace CitySim {
 
-Game::Game(sf::RenderWindow& window)
-    : m_window(&window) {
+Game::Game(Graphics::Window& window, Graphics::Renderer& renderer, Input::InputManager& inputManager)
+    : m_window(&window)
+    , m_renderer(&renderer)
+    , m_inputManager(&inputManager) {
 }
 
 Game::~Game() {
@@ -64,25 +69,30 @@ void Game::handleEvent(const sf::Event& event) {
         return;
     }
 
+#if SFML_VERSION_MAJOR >= 3
     if (const auto* resized = event.getIf<sf::Event::Resized>()) {
         onWindowResized(*resized);
     }
-    else if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>()) {
-        if (keyPressed->scancode == sf::Keyboard::Scancode::P) {
-            if (isPaused()) {
-                resume();
-                LOG_INFO("Jogo retomado");
-            } else {
-                pause();
-                LOG_INFO("Jogo pausado");
-            }
-        }
+#else
+    if (event.type == sf::Event::Resized) {
+        onWindowResized(event.size);
     }
+#endif
 }
 
 void Game::update(float deltaTime) {
     if (!isInitialized() || isPaused()) {
         return;
+    }
+
+    if (m_inputManager && m_inputManager->keyboard().wasPressed(sf::Keyboard::Key::P)) {
+        if (isPaused()) {
+            resume();
+            LOG_INFO("Jogo retomado");
+        } else {
+            pause();
+            LOG_INFO("Jogo pausado");
+        }
     }
 
     updateDebugVisual(deltaTime);
@@ -97,7 +107,9 @@ void Game::render() {
         return;
     }
 
-    m_window->draw(m_debugShape);
+    if (m_renderer) {
+        m_renderer->draw(m_debugShape);
+    }
 }
 
 void Game::pause() {
@@ -117,6 +129,7 @@ void Game::resume() {
     m_simulationClock.restart();
 }
 
+#if SFML_VERSION_MAJOR >= 3
 void Game::onWindowResized(const sf::Event::Resized& resizedEvent) {
     if (!m_debugShapeInitialized) {
         return;
@@ -127,6 +140,18 @@ void Game::onWindowResized(const sf::Event::Resized& resizedEvent) {
         static_cast<float>(resizedEvent.size.y) / 2.0f
     ));
 }
+#else
+void Game::onWindowResized(const sf::Event::SizeEvent& resizedEvent) {
+    if (!m_debugShapeInitialized) {
+        return;
+    }
+
+    m_debugShape.setPosition(sf::Vector2f(
+        static_cast<float>(resizedEvent.width) / 2.0f,
+        static_cast<float>(resizedEvent.height) / 2.0f
+    ));
+}
+#endif
 
 void Game::updateDebugVisual(float deltaTime) {
     constexpr float rotationSpeed = 90.0f; // graus por segundo
@@ -135,7 +160,7 @@ void Game::updateDebugVisual(float deltaTime) {
         m_debugShapeRotation = std::fmod(m_debugShapeRotation, 360.0f);
     }
 
-    m_debugShape.setRotation(sf::degrees(m_debugShapeRotation));
+    m_debugShape.setRotation(m_debugShapeRotation);
 }
 
 } // namespace CitySim

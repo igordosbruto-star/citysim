@@ -11,7 +11,8 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Arquivos base e headers da aplicação. `Application.cpp`, `Game.cpp`, `Config.cpp`
 - Sistema de logging com Logger.cpp/hpp
 - Implementação do loop principal da aplicação
-- Sistema de eventos SFML 3 compatível
+- Subsistemas dedicados de janela, renderização e câmera sob `include/Graphics/` e `src/Graphics/`
+- Sistema de entrada com `InputManager`, `Keyboard` e `Mouse` encapsulando eventos do SFML
 - Renderização básica com formas geométricas
 - Scripts de configuração de ambiente (`scripts/setup_environment.sh` e `.bat`) com instalação mínima via vcpkg
 - Arquivo `docs/CONTRIBUTING.md` alinhado ao guia raiz de contribuição
@@ -20,9 +21,9 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
 - Integrado editor em todos os marcos do roadmap
-- Migração completa para SFML 3 com API atualizada
-- Correção do sistema de criação de janela para SFML 3
-- Atualização do sistema de eventos para usar std::optional
+- Ajustado build para localizar SFML 2.5+ (mantendo compatibilidade futura com SFML 3)
+- Correção do sistema de criação de janela e loop de eventos para suportar tanto SFML 2.5 quanto SFML 3
+- Atualização do sistema de eventos para usar uma camada de compatibilidade baseada em `std::optional`
 
 ### Fixed
 - Erros de compilação com VideoMode no SFML 3
@@ -30,7 +31,7 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Erro C2171 com método create() da janela
 - Sistema de handling de eventos com nova API SFML 3
 - Warning C4127 em loop condicional
-- Compatibilidade total com SFML 3.0.2
+- Compatibilidade de build restaurada no ambiente container padrão (SFML 2.5)
 
 ### Docs
 - `VISION.md` - Documento de visão completo com editor integrado

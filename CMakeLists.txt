@@ -26,7 +26,13 @@ set(CITY_SIMULATOR_SOURCES
     src/Utils/Logger.cpp
     src/Core/Game.cpp
     src/Core/Config.cpp
-    
+    src/Graphics/Window.cpp
+    src/Graphics/Renderer.cpp
+    src/Graphics/Camera.cpp
+    src/Input/InputManager.cpp
+    src/Input/Keyboard.cpp
+    src/Input/Mouse.cpp
+
 )
 
 # Criar executável principal
@@ -52,11 +58,14 @@ endif()
 
 # ===== Dependências =====
 
-# SFML 3
-find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
-target_link_libraries(city-simulator PRIVATE
-  SFML::Graphics SFML::Window SFML::System
-)
+# SFML 2.5+ (compatível com SFML 3 quando disponível)
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+
+if (TARGET SFML::Graphics)
+  target_link_libraries(city-simulator PRIVATE SFML::Graphics SFML::Window SFML::System)
+else()
+  target_link_libraries(city-simulator PRIVATE sfml-graphics sfml-window sfml-system)
+endif()
 
 # JSON (opcional)
 find_package(nlohmann_json 3.11.2 QUIET)
@@ -148,7 +157,14 @@ message(STATUS "Build tests: ${BUILD_TESTS}")
 message(STATUS "Copy assets: ${COPY_ASSETS}")
 message(STATUS "")
 message(STATUS "Dependencies:")
-message(STATUS "  - SFML: ${SFML_VERSION}")
+if(DEFINED SFML_VERSION)
+  set(_sfml_version ${SFML_VERSION})
+elseif(DEFINED SFML_VERSION_STRING)
+  set(_sfml_version ${SFML_VERSION_STRING})
+else()
+  set(_sfml_version "Unknown")
+endif()
+message(STATUS "  - SFML: ${_sfml_version}")
 if(nlohmann_json_FOUND)
     message(STATUS "  - nlohmann_json: OK")
 else()

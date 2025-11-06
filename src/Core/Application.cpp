@@ -1,10 +1,18 @@
 #include "Core/Application.hpp"
 
 #include "Core/Game.hpp"
+#include "Graphics/Camera.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Window.hpp"
+#include "Input/InputManager.hpp"
+#include "Input/Keyboard.hpp"
 #include "Utils/Logger.hpp"
 
+#include <SFML/Config.hpp>
+#include <SFML/Window/ContextSettings.hpp>
+
+#include <chrono>
 #include <thread>
-#include <optional>
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -25,33 +33,22 @@ bool Application::initialize() {
     
     LOG_INFO("Inicializando Application...");
     
-    // ✅ SFML 3: VideoMode com sf::Vector2u
-    sf::VideoMode videoMode(sf::Vector2u(Config::windowWidth(), Config::windowHeight()));
+    sf::VideoMode videoMode(Config::windowWidth(), Config::windowHeight());
 
-    // ✅ SFML 3: ContextSettings
     sf::ContextSettings contextSettings;
 
-    // ✅ SFML 3: Window creation - create() retorna void, não bool
-    try {
-        m_window.create(videoMode, Config::windowTitle());
-
-        // Verifica se a janela foi criada com sucesso
-        if (!m_window.isOpen()) {
-            LOG_ERROR("Falha ao criar a janela - janela não está aberta");
-            return false;
-        }
-
-        m_window.setFramerateLimit(Config::targetFps());
-        m_window.setKeyRepeatEnabled(false);
-        m_window.setVerticalSyncEnabled(Config::vsyncEnabled());
-
-    } catch (const std::exception& e) {
-        LOG_ERROR_F("Exceção ao criar janela: %s", e.what());
-        return false;
-    } catch (...) {
-        LOG_ERROR("Exceção desconhecida ao criar janela");
+    if (!m_window.create(videoMode, Config::windowTitle(), contextSettings)) {
+        LOG_ERROR("Falha ao criar janela principal");
         return false;
     }
+
+    m_window.setFramerateLimit(Config::targetFps());
+    m_window.setKeyRepeatEnabled(false);
+    m_window.setVerticalSyncEnabled(Config::vsyncEnabled());
+
+    m_renderer = std::make_unique<Graphics::Renderer>(m_window);
+    m_camera = std::make_unique<Graphics::Camera>(m_window);
+    m_camera->apply(*m_renderer);
 
     m_targetFrameTime = 1.0f / static_cast<float>(Config::targetFps());
     m_isInitialized = true;
@@ -66,6 +63,14 @@ void Application::shutdown() {
     
     LOG_INFO("Encerrando Application...");
     
+    if (m_renderer) {
+        m_renderer.reset();
+    }
+
+    if (m_camera) {
+        m_camera.reset();
+    }
+
     if (m_window.isOpen()) {
         m_window.close();
     }
@@ -95,7 +100,7 @@ void Application::run(Game& game) {
             m_isRunning = false;
             break;
         }
-        
+
         float deltaTime = frameClock.restart().asSeconds();
         frameCount++;
         
@@ -106,6 +111,7 @@ void Application::run(Game& game) {
             LOG_DEBUG_F("FPS: %.1f, DeltaTime: %.3fms", fps, deltaTime * 1000.0f);
         }
         
+        m_inputManager.beginFrame();
         handleEvents(game);
         update(game, deltaTime);
         render(game);
@@ -123,39 +129,65 @@ void Application::run(Game& game) {
 }
 
 void Application::handleEvents(Game& game) {
-    // ✅ SFML 3: pollEvent retorna std::optional
-    while (std::optional<sf::Event> event = m_window.pollEvent()) {
-        // ✅ SFML 3: Usar event->is<T>() e event->getIf<T>()
-        if (event->is<sf::Event::Closed>()) {
+    m_inputManager.processEvents(m_window, [&](const sf::Event& event) {
+#if SFML_VERSION_MAJOR >= 3
+        if (event.is<sf::Event::Closed>()) {
             LOG_INFO("Evento: Janela fechada");
             quit();
-        }
-        else if (const sf::Event::Resized* resized = event->getIf<sf::Event::Resized>()) {
+        } else if (const auto* resized = event.getIf<sf::Event::Resized>()) {
             LOG_INFO_F("Evento: Janela redimensionada para %dx%d",
                       resized->size.x, resized->size.y);
-        }
-        else if (const sf::Event::KeyPressed* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
-                LOG_INFO("Evento: Tecla ESC pressionada - saindo");
-                quit();
+            if (m_camera && m_renderer) {
+                m_camera->resize(sf::Vector2u(resized->size.x, resized->size.y));
+                m_camera->apply(*m_renderer);
             }
-        }
-        else if (const sf::Event::MouseButtonPressed* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+        } else if (const auto* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
             LOG_DEBUG_F("Evento: Mouse pressionado - Botão: %d, Pos: (%d, %d)",
                        static_cast<int>(mousePressed->button),
                        mousePressed->position.x,
                        mousePressed->position.y);
-        }
-        else if (const sf::Event::MouseMoved* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+        } else if (const auto* mouseMoved = event.getIf<sf::Event::MouseMoved>()) {
             static unsigned int moveCount = 0;
             if (++moveCount % 10 == 0) {
-                LOG_TRACE_F("Mouse movido para: (%d, %d)", 
+                LOG_TRACE_F("Mouse movido para: (%d, %d)",
                            mouseMoved->position.x, mouseMoved->position.y);
             }
         }
+#else
+        switch (event.type) {
+        case sf::Event::Closed:
+            LOG_INFO("Evento: Janela fechada");
+            quit();
+            break;
+        case sf::Event::Resized:
+            LOG_INFO_F("Evento: Janela redimensionada para %dx%d",
+                      event.size.width, event.size.height);
+            if (m_camera && m_renderer) {
+                m_camera->resize(sf::Vector2u(event.size.width, event.size.height));
+                m_camera->apply(*m_renderer);
+            }
+            break;
+        case sf::Event::MouseButtonPressed:
+            LOG_DEBUG_F("Evento: Mouse pressionado - Botão: %d, Pos: (%d, %d)",
+                       static_cast<int>(event.mouseButton.button),
+                       event.mouseButton.x,
+                       event.mouseButton.y);
+            break;
+        case sf::Event::MouseMoved: {
+            static unsigned int moveCount = 0;
+            if (++moveCount % 10 == 0) {
+                LOG_TRACE_F("Mouse movido para: (%d, %d)",
+                           event.mouseMove.x, event.mouseMove.y);
+            }
+            break;
+        }
+        default:
+            break;
+        }
+#endif
 
-        game.handleEvent(*event);
-    }
+        game.handleEvent(event);
+    });
 }
 
 void Application::update(Game& game, float deltaTime) {
@@ -168,16 +200,25 @@ void Application::update(Game& game, float deltaTime) {
         updateTimer = 0.0f;
     }
 
+    if (m_inputManager.keyboard().wasPressed(sf::Keyboard::Key::Escape)) {
+        LOG_INFO("Tecla ESC detectada - encerrando aplicação");
+        quit();
+        return;
+    }
+
     game.update(deltaTime);
 }
 
 void Application::render(Game& game) {
-    // Limpa a tela com cor escura
-    m_window.clear(sf::Color(30, 30, 45));
+    if (!m_renderer) {
+        return;
+    }
+
+    m_renderer->beginFrame(sf::Color(30, 30, 45));
 
     game.render();
 
-    m_window.display();
+    m_renderer->endFrame();
 }
 
 } // namespace CitySim

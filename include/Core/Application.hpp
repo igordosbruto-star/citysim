@@ -1,7 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include "Core/Config.hpp"
+#include "Graphics/Camera.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Window.hpp"
+#include "Input/InputManager.hpp"
+
+#include <memory>
 
 namespace CitySim {
 
@@ -16,7 +21,10 @@ public:
     void run(Game& game);
     void quit() { m_isRunning = false; }
 
-    sf::RenderWindow& getWindow() { return m_window; }
+    Graphics::Window& window() { return m_window; }
+    Graphics::Renderer& renderer() { return *m_renderer; }
+    Graphics::Camera& camera() { return *m_camera; }
+    Input::InputManager& input() { return m_inputManager; }
     bool isRunning() const { return m_isRunning; }
 
 private:
@@ -30,7 +38,10 @@ private:
     void render(Game& game);
 
 private:
-    sf::RenderWindow m_window;
+    Graphics::Window m_window;
+    std::unique_ptr<Graphics::Renderer> m_renderer;
+    std::unique_ptr<Graphics::Camera> m_camera;
+    Input::InputManager m_inputManager;
     float m_targetFrameTime = 1.0f / 60.0f;
     bool m_isInitialized = false;
     bool m_isRunning = false;
