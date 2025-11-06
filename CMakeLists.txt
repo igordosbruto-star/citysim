@@ -24,6 +24,9 @@ set(CITY_SIMULATOR_SOURCES
     src/main.cpp
     src/Core/Application.cpp
     src/Utils/Logger.cpp
+    src/Core/Game.cpp
+    src/Core/Config.cpp
+    
 )
 
 # Criar executável principal
