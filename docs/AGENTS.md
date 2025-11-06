@@ -196,6 +196,21 @@ clang-format -i src/**/*.cpp include/**/*.hpp
 - Manter compatibilidade com save games
 - Seguir princípios SOLID quando aplicável
 
+## ⚙️ Ambiente de Desenvolvimento (Bootstrap)
+
+Antes de compilar, o agente deve preparar o ambiente executando o script abaixo:
+
+### Linux / Codex Container
+```bash
+chmod +x setup_environment.sh
+./setup_environment.sh
+```
+
+### Windows (local)
+```bash
+setup_environment.bat
+```
+
 ---
 
 Última atualização: 04-11-2025

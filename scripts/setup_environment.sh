@@ -37,3 +37,8 @@ cmake -S "$ROOT_DIR" -B "$BUILD_DIR" \
 cmake --build "$BUILD_DIR" --config Release
 
 echo "Environment setup complete. Binaries are available in $BUILD_DIR."
+
+cmake -S "$ROOT_DIR" -B "$BUILD_DIR" \
+    -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+    -DVCPKG_FEATURE_FLAGS=manifests \
+    -DCMAKE_BUILD_TYPE=Release
