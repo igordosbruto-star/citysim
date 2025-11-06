@@ -22,20 +22,54 @@ set(OUT_DIR "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 # ===== Fontes do CitySimulator (Jogo Principal) =====
 set(CITY_SIMULATOR_SOURCES
     src/main.cpp
+    src/game.cpp
+    src/game_state.cpp
+    src/game_state_manager.cpp
+    src/city_map.cpp
+    src/building.cpp
+    src/road_network.cpp
+    src/citizen.cpp
+    src/vehicle.cpp
+    src/economy_system.cpp
+    src/time_system.cpp
+    src/weather_system.cpp
+    src/camera.cpp
+    src/input_handler.cpp
+    src/config_manager.cpp
+    src/resource_manager.cpp
     
     # Sistemas Core (ECS)
+    src/core/entity_manager.cpp
+    src/core/system_manager.cpp
+    src/core/component_pool.cpp
     
     # Tech Tree System
+    src/tech_tree/tech_tree_system.cpp
+    src/tech_tree/technology.cpp
+    src/tech_tree/research_manager.cpp
     
     # Renderização
+    src/rendering/tilemap_renderer.cpp
+    src/rendering/sprite_renderer.cpp
+    src/rendering/ui_renderer.cpp
+    src/rendering/lighting_system.cpp
     
     # Simulação
-
+    src/simulation/citizen_system.cpp
+    src/simulation/traffic_system.cpp
+    src/simulation/economy_simulator.cpp
+    src/simulation/pathfinding_system.cpp
     
     # UI
+    src/ui/main_menu.cpp
+    src/ui/hud.cpp
+    src/ui/tech_tree_ui.cpp
+    src/ui/toolbar.cpp
     
     # Utilitários
-
+    src/utils/json_loader.cpp
+    src/utils/math_utils.cpp
+    src/utils/random.cpp
 )
 
 add_executable(city-simulator ${CITY_SIMULATOR_SOURCES})
@@ -107,6 +141,25 @@ set_target_properties(city-simulator PROPERTIES
 if(BUILD_EDITOR)
   set(CITY_EDITOR_SOURCES
       editor/main.cpp
+      editor/editor_app.cpp
+      editor/main_frame.cpp
+      editor/city_viewport.cpp
+      editor/tool_panel.cpp
+      editor/property_panel.cpp
+      editor/layer_panel.cpp
+      editor/building_editor.cpp
+      editor/road_editor.cpp
+      editor/zone_editor.cpp
+      editor/terrain_editor.cpp
+      editor/city_loader.cpp
+      editor/city_saver.cpp
+      editor/config_dialog.cpp
+      editor/resource_manager.cpp
+      editor/camera_controller.cpp
+      editor/grid_renderer.cpp
+      editor/selection_tool.cpp
+      editor/tech_tree_editor.cpp
+      editor/map_export_dialog.cpp
   )
 
   # wxWidgets
@@ -233,8 +286,23 @@ if(BUILD_TESTS)
     # Testes do simulador
     set(TEST_SOURCES
         tests/test_basic.cpp
+        tests/test_city_map.cpp
+        tests/test_economy.cpp
+        tests/test_building.cpp
+        tests/test_tech_tree.cpp
+        tests/test_pathfinding.cpp
         
         # Fontes necessárias para os testes
+        src/city_map.cpp
+        src/building.cpp
+        src/economy_system.cpp
+        src/time_system.cpp
+        src/config_manager.cpp
+        src/resource_manager.cpp
+        src/tech_tree/tech_tree_system.cpp
+        src/tech_tree/technology.cpp
+        src/simulation/pathfinding_system.cpp
+        src/utils/json_loader.cpp
     )
     
     add_executable(city-tests ${TEST_SOURCES})
@@ -261,7 +329,16 @@ if(BUILD_TESTS)
     
     # Testes do editor (se o editor estiver sendo construído)
     if(BUILD_EDITOR)
-      add_executable(city-editor-tests ${TEST_SOURCES})
+      add_executable(city-editor-tests
+        tests/editor/test_city_loader.cpp
+        tests/editor/test_building_editor.cpp
+        tests/editor/test_tech_tree_editor.cpp
+        
+        editor/city_loader.cpp
+        editor/building_editor.cpp
+        editor/tech_tree_editor.cpp
+        editor/resource_manager.cpp
+      )
       
       target_link_libraries(city-editor-tests PRIVATE
         GTest::gtest_main

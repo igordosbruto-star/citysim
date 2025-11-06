@@ -1,0 +1,14 @@
+{
+  "name": "citysim",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "sfml",
+    "nlohmann-json",
+    "lua",
+    "sol2",
+    "entt",
+    "wxwidgets",
+    "glew",
+    "gtest"
+  ]
+}

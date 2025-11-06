@@ -8,9 +8,10 @@
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
         "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_FEATURE_FLAGS": "manifests",
         "BUILD_EDITOR": "ON",
         "BUILD_TESTS": "ON",
         "COPY_ASSETS": "ON"
@@ -28,7 +29,7 @@
     {
       "name": "windows-debug",
       "displayName": "Windows x64 Debug",
-      " "description": "Debug build with vcpkg",
+      "description": "Debug build with vcpkg",
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build-debug",
       "cacheVariables": {

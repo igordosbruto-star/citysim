@@ -19,26 +19,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ===== Diretório de saída comum =====
 set(OUT_DIR "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 
-# ===== Fontes do CitySimulator (Jogo Principal) =====
-set(CITY_SIMULATOR_SOURCES
-    src/main.cpp
-    
-    # Sistemas Core (ECS)
-    
-    # Tech Tree System
-    
-    # Renderização
-    
-    # Simulação
-
-    
-    # UI
-    
-    # Utilitários
-
+# ===== Descobrir fontes automaticamente (Opção A) =====
+# Jogo (src/*.cpp)
+file(GLOB_RECURSE CITYSIM_SOURCES CONFIGURE_DEPENDS
+  "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
+if(CITYSIM_SOURCES STREQUAL "")
+  # Cria um stub para permitir compilar/gerar a solução mesmo sem fontes ainda
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/_stubs")
+  file(WRITE "${CMAKE_BINARY_DIR}/_stubs/main.cpp" "int main(){return 0;}")
+  list(APPEND CITYSIM_SOURCES "${CMAKE_BINARY_DIR}/_stubs/main.cpp")
+endif()
 
-add_executable(city-simulator ${CITY_SIMULATOR_SOURCES})
+add_executable(city-simulator ${CITYSIM_SOURCES})
 target_compile_features(city-simulator PRIVATE cxx_std_20)
 
 # ===== Warnings e configurações do compilador =====
@@ -82,8 +75,6 @@ find_path(SOL2_INCLUDE_DIRS "sol/abort.hpp")
 if(NOT SOL2_INCLUDE_DIRS)
   message(FATAL_ERROR "sol2 headers not found")
 endif()
-target_link_libraries(city-simulator PRIVATE )
-
 # entt (ECS) - header only
 find_package(EnTT CONFIG REQUIRED)
 target_link_libraries(city-simulator PRIVATE EnTT::EnTT)
@@ -105,63 +96,66 @@ set_target_properties(city-simulator PROPERTIES
 
 # ===== Editor CitySimulator (wxWidgets) =====
 if(BUILD_EDITOR)
-  set(CITY_EDITOR_SOURCES
-      editor/main.cpp
+  # Pega tudo que existir em editor/*.cpp; se vazio, não cria o alvo
+  file(GLOB_RECURSE CITY_EDITOR_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/editor/*.cpp"
   )
-
-  # wxWidgets
-  find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base aui gl adv)
-  if(NOT wxWidgets_FOUND)
-    message(WARNING "wxWidgets not found, disabling editor build")
-    set(BUILD_EDITOR OFF)
-  else()
-    # GLEW para OpenGL
-    find_package(GLEW REQUIRED)
-
-    add_executable(city-editor ${CITY_EDITOR_SOURCES})
-    target_compile_features(city-editor PRIVATE cxx_std_20)
-
-    # wxWidgets setup
-    target_link_libraries(city-editor PRIVATE
-      wx::core wx::base wx::aui wx::gl wx::adv
-      nlohmann_json::nlohmann_json
-      GLEW::GLEW
-      opengl32
-    )
-
-    # Definir flags específicas do wxWidgets para Windows
-    if(WIN32)
-      target_compile_definitions(city-editor PRIVATE
-        WXUSINGDLL
-        wxMSVC_VERSION_AUTO
-        _CRT_SECURE_NO_WARNINGS
-        _WIN32_WINNT=0x0601
-      )
-      # Configurar como aplicação Windows (não console)
-      set_target_properties(city-editor PROPERTIES
-        WIN32_EXECUTABLE TRUE
-      )
-    endif()
-
-    # Incluir diretórios do editor
-    target_include_directories(city-editor PRIVATE
-      ${CMAKE_SOURCE_DIR}/editor
-      ${CMAKE_SOURCE_DIR}/include
-    )
-
-    # Warnings para o editor
-    if(MSVC)
-      target_compile_options(city-editor PRIVATE /W4 /permissive- /EHsc /utf-8)
+  if(CITY_EDITOR_SOURCES)
+    # wxWidgets
+    find_package(wxWidgets CONFIG REQUIRED COMPONENTS core base aui gl adv)
+    if(NOT wxWidgets_FOUND)
+      message(WARNING "wxWidgets not found, disabling editor build")
     else()
-      target_compile_options(city-editor PRIVATE -Wall -Wextra -Wpedantic)
-    endif()
+      # GLEW para OpenGL
+      find_package(GLEW REQUIRED)
 
-    # Configuração de saída do editor
-    set_target_properties(city-editor PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY "${OUT_DIR}"
-      ARCHIVE_OUTPUT_DIRECTORY "${OUT_DIR}"
-      LIBRARY_OUTPUT_DIRECTORY "${OUT_DIR}"
-    )
+      add_executable(city-editor ${CITY_EDITOR_SOURCES})
+      target_compile_features(city-editor PRIVATE cxx_std_20)
+
+      # wxWidgets setup
+      target_link_libraries(city-editor PRIVATE
+        wx::core wx::base wx::aui wx::gl wx::adv
+        nlohmann_json::nlohmann_json
+        GLEW::GLEW
+        opengl32
+      )
+
+      # Definir flags específicas do wxWidgets para Windows
+      if(WIN32)
+        target_compile_definitions(city-editor PRIVATE
+          WXUSINGDLL
+          wxMSVC_VERSION_AUTO
+          _CRT_SECURE_NO_WARNINGS
+          _WIN32_WINNT=0x0601
+        )
+        # Configurar como aplicação Windows (não console)
+        set_target_properties(city-editor PROPERTIES
+          WIN32_EXECUTABLE TRUE
+        )
+      endif()
+
+      # Incluir diretórios do editor
+      target_include_directories(city-editor PRIVATE
+        ${CMAKE_SOURCE_DIR}/editor
+        ${CMAKE_SOURCE_DIR}/include
+      )
+
+      # Warnings para o editor
+      if(MSVC)
+        target_compile_options(city-editor PRIVATE /W4 /permissive- /EHsc /utf-8)
+      else()
+        target_compile_options(city-editor PRIVATE -Wall -Wextra -Wpedantic)
+      endif()
+
+      # Configuração de saída do editor
+      set_target_properties(city-editor PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${OUT_DIR}"
+        ARCHIVE_OUTPUT_DIRECTORY "${OUT_DIR}"
+        LIBRARY_OUTPUT_DIRECTORY "${OUT_DIR}"
+      )
+    endif()
+  else()
+    message(STATUS "Nenhum .cpp em editor/ ainda — pulando alvo city-editor")
   endif()
 endif()
 
@@ -228,62 +222,37 @@ endif()
 if(BUILD_TESTS)
   enable_testing()
   find_package(GTest CONFIG REQUIRED)
-  
-  if(GTest_FOUND)
-    # Testes do simulador
-    set(TEST_SOURCES
-        tests/test_basic.cpp
-        
-        # Fontes necessárias para os testes
-    )
-    
+
+  # GLOBA todos os testes em tests/*.cpp
+  file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/tests/*.cpp"
+  )
+
+  if(TEST_SOURCES)
     add_executable(city-tests ${TEST_SOURCES})
     target_compile_features(city-tests PRIVATE cxx_std_20)
-    
+
     target_link_libraries(city-tests PRIVATE
       GTest::gtest_main
       SFML::System
-      nlohmann_json::nlohmann_json EnTT::EnTT
+      nlohmann_json::nlohmann_json
+      EnTT::EnTT
       ${LUA_LIBRARIES}
     )
-    
+
     target_include_directories(city-tests PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${CMAKE_SOURCE_DIR}/include
       ${LUA_INCLUDE_DIR}
-    
-  ${SOL2_INCLUDE_DIRS}
-)
-    
+      ${SOL2_INCLUDE_DIRS}
+    )
+
     set_target_properties(city-tests PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${OUT_DIR}"
     )
-    
-    # Testes do editor (se o editor estiver sendo construído)
-    if(BUILD_EDITOR)
-      add_executable(city-editor-tests ${TEST_SOURCES})
-      
-      target_link_libraries(city-editor-tests PRIVATE
-        GTest::gtest_main
-        wx::core wx::base
-        nlohmann_json::nlohmann_json
-      )
-      
-      target_include_directories(city-editor-tests PRIVATE
-        ${CMAKE_SOURCE_DIR}/editor
-        ${CMAKE_SOURCE_DIR}/include
-      )
-      
-      set_target_properties(city-editor-tests PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${OUT_DIR}"
-      )
-      
-      add_test(NAME editor_basic_tests COMMAND city-editor-tests WORKING_DIRECTORY "${OUT_DIR}")
-    endif()
-    
-    # Adicionar testes ao CTest
+
     add_test(NAME city_basic_tests COMMAND city-tests WORKING_DIRECTORY "${OUT_DIR}")
-    
+
     # Garantir que os assets estejam disponíveis para os testes
     if(COPY_ASSETS AND EXISTS "${ASSETS_DIR}")
       add_custom_command(TARGET city-tests POST_BUILD
@@ -291,12 +260,35 @@ if(BUILD_TESTS)
         VERBATIM
       )
     endif()
+
+    # Testes do editor (se o editor estiver sendo construído e tiver .cpp em tests/editor)
+    file(GLOB_RECURSE EDITOR_TEST_SOURCES CONFIGURE_DEPENDS
+      "${CMAKE_SOURCE_DIR}/tests/editor/*.cpp"
+    )
+    if(TARGET city-editor AND EDITOR_TEST_SOURCES)
+      add_executable(city-editor-tests ${EDITOR_TEST_SOURCES})
+      target_link_libraries(city-editor-tests PRIVATE
+        GTest::gtest_main
+        wx::core wx::base
+        nlohmann_json::nlohmann_json
+      )
+      target_include_directories(city-editor-tests PRIVATE
+        ${CMAKE_SOURCE_DIR}/editor
+        ${CMAKE_SOURCE_DIR}/include
+      )
+      set_target_properties(city-editor-tests PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${OUT_DIR}"
+      )
+      add_test(NAME editor_basic_tests COMMAND city-editor-tests WORKING_DIRECTORY "${OUT_DIR}")
+    endif()
+
   else()
-    message(WARNING "GTest not found, tests will not be built")
+    message(STATUS "Nenhum .cpp em tests/ ainda — pulando alvo city-tests")
   endif()
 endif()
 
 # ===== Instalação =====
+
 include(GNUInstallDirs)
 
 install(TARGETS city-simulator
