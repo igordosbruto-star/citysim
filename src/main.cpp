@@ -26,7 +26,7 @@ int main() {
             return -1;
         }
 
-        CitySim::Game game(app.getWindow());
+        CitySim::Game game(app.window(), app.renderer(), app.input());
 
         if (!game.initialize()) {
             LOG_ERROR("Falha na inicialização do Game");

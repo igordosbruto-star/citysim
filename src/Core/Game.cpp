@@ -1,6 +1,10 @@
 #include "Core/Game.hpp"
 
 #include "Core/Config.hpp"
+#include "Graphics/Renderer.hpp"
+#include "Graphics/Window.hpp"
+#include "Input/InputManager.hpp"
+#include "Input/Keyboard.hpp"
 #include "Utils/Logger.hpp"
 
 #include <SFML/Graphics/Color.hpp>
@@ -10,8 +14,10 @@
 
 namespace CitySim {
 
-Game::Game(sf::RenderWindow& window)
-    : m_window(&window) {
+Game::Game(Graphics::Window& window, Graphics::Renderer& renderer, Input::InputManager& inputManager)
+    : m_window(&window)
+    , m_renderer(&renderer)
+    , m_inputManager(&inputManager) {
 }
 
 Game::~Game() {
@@ -67,22 +73,21 @@ void Game::handleEvent(const sf::Event& event) {
     if (const auto* resized = event.getIf<sf::Event::Resized>()) {
         onWindowResized(*resized);
     }
-    else if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>()) {
-        if (keyPressed->scancode == sf::Keyboard::Scancode::P) {
-            if (isPaused()) {
-                resume();
-                LOG_INFO("Jogo retomado");
-            } else {
-                pause();
-                LOG_INFO("Jogo pausado");
-            }
-        }
-    }
 }
 
 void Game::update(float deltaTime) {
     if (!isInitialized() || isPaused()) {
         return;
+    }
+
+    if (m_inputManager && m_inputManager->keyboard().wasPressed(sf::Keyboard::Scancode::P)) {
+        if (isPaused()) {
+            resume();
+            LOG_INFO("Jogo retomado");
+        } else {
+            pause();
+            LOG_INFO("Jogo pausado");
+        }
     }
 
     updateDebugVisual(deltaTime);
@@ -97,7 +102,9 @@ void Game::render() {
         return;
     }
 
-    m_window->draw(m_debugShape);
+    if (m_renderer) {
+        m_renderer->draw(m_debugShape);
+    }
 }
 
 void Game::pause() {
