@@ -24,6 +24,9 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Ajustado build para localizar SFML 2.5+ (mantendo compatibilidade futura com SFML 3)
 - Correção do sistema de criação de janela e loop de eventos para suportar tanto SFML 2.5 quanto SFML 3
 - Atualização do sistema de eventos para usar uma camada de compatibilidade baseada em `std::optional`
+ - CMake: relaxado requisito de versão do SFML e correção de componentes (aceita SFML 3 via vcpkg)
+ - Compatibilidade SFML 3: adaptados `VideoMode`, `Transformable::setRotation`, `Window::create` e eventos de teclado
+	 - Arquivos modificados: `CMakeLists.txt`, `src/Core/Application.cpp`, `src/Core/Game.cpp`, `src/Graphics/Window.cpp`, `src/Input/Keyboard.cpp`
 
 ### Fixed
 - Erros de compilação com VideoMode no SFML 3
@@ -32,6 +35,8 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Sistema de handling de eventos com nova API SFML 3
 - Warning C4127 em loop condicional
 - Compatibilidade de build restaurada no ambiente container padrão (SFML 2.5)
+ - Resolução do erro de configuração CMake causado pela incompatibilidade de versão do SFML (2.5 vs 3.x)
+ - Corrigidos erros de compilação introduzidos por mudança de API entre SFML 2 -> 3 (nomes de campos de eventos, overloads e headers)
 
 ### Docs
 - `VISION.md` - Documento de visão completo com editor integrado
@@ -39,6 +44,7 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - `README.md` - Descrição básica e referências gerais
 - `AGENTS.md` - Guidelines para assistentes de IA no projeto
 - `CHANGELOG.md` - Este arquivo de histórico de mudanças
+ - `.github/copilot-instructions.md` - Guia conciso para assistentes de IA (adicionado)
 
 
 [0.1.0] - 2024-XX-XX

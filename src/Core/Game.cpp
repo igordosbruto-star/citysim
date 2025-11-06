@@ -160,7 +160,12 @@ void Game::updateDebugVisual(float deltaTime) {
         m_debugShapeRotation = std::fmod(m_debugShapeRotation, 360.0f);
     }
 
+#if SFML_VERSION_MAJOR >= 3
+    // SFML 3 uses sf::Angle for rotations
+    m_debugShape.setRotation(sf::degrees(m_debugShapeRotation));
+#else
     m_debugShape.setRotation(m_debugShapeRotation);
+#endif
 }
 
 } // namespace CitySim

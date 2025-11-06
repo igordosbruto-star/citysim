@@ -9,7 +9,8 @@ void Keyboard::beginFrame() {
 
 #if SFML_VERSION_MAJOR >= 3
 void Keyboard::handlePressed(const sf::Event::KeyPressed& event) {
-    const auto key = event.key;
+    // SFML 3 exposes the key code as 'code' on the event
+    const auto key = event.code;
 #else
 void Keyboard::handlePressed(const sf::Event::KeyEvent& event) {
     const auto key = event.code;
@@ -22,7 +23,8 @@ void Keyboard::handlePressed(const sf::Event::KeyEvent& event) {
 
 #if SFML_VERSION_MAJOR >= 3
 void Keyboard::handleReleased(const sf::Event::KeyReleased& event) {
-    const auto key = event.key;
+    // SFML 3 exposes the key code as 'code' on the event
+    const auto key = event.code;
 #else
 void Keyboard::handleReleased(const sf::Event::KeyEvent& event) {
     const auto key = event.code;

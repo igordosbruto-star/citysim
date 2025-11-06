@@ -58,8 +58,9 @@ endif()
 
 # ===== Dependências =====
 
-# SFML 2.5+ (compatível com SFML 3 quando disponível)
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+# SFML: accept whichever SFML version is available via vcpkg (2.x or 3.x).
+# Avoid hard-coding 2.5 so vcpkg-installed SFML 3.x (e.g. 3.0.1) is accepted.
+find_package(SFML COMPONENTS Graphics Window System REQUIRED)
 
 if (TARGET SFML::Graphics)
   target_link_libraries(city-simulator PRIVATE SFML::Graphics SFML::Window SFML::System)

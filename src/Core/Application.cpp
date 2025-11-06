@@ -33,7 +33,13 @@ bool Application::initialize() {
     
     LOG_INFO("Inicializando Application...");
     
+    // SFML 3 changed VideoMode constructors to take a vector for size.
+#if SFML_VERSION_MAJOR >= 3
+    sf::VideoMode videoMode(sf::Vector2u(static_cast<unsigned int>(Config::windowWidth()),
+                                         static_cast<unsigned int>(Config::windowHeight())));
+#else
     sf::VideoMode videoMode(Config::windowWidth(), Config::windowHeight());
+#endif
 
     sf::ContextSettings contextSettings;
 

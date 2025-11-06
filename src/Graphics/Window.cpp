@@ -3,7 +3,10 @@
 #include "Utils/Logger.hpp"
 
 #include <SFML/Config.hpp>
+// SFML 3 removed the old WindowStyle header; only include the legacy header for SFML 2.
+#if SFML_VERSION_MAJOR < 3
 #include <SFML/Window/WindowStyle.hpp>
+#endif
 
 #include <exception>
 
@@ -12,9 +15,10 @@ namespace CitySim::Graphics {
 bool Window::create(const sf::VideoMode& videoMode, const std::string& title, sf::ContextSettings settings) {
     try {
 #if SFML_VERSION_MAJOR >= 3
-        m_window.create(videoMode, title, settings);
+    // SFML 3: create(videoMode, title, State, settings)
+    m_window.create(videoMode, title, sf::State::Windowed, settings);
 #else
-        m_window.create(videoMode, title, sf::Style::Default, settings);
+    m_window.create(videoMode, title, sf::Style::Default, settings);
 #endif
         if (!m_window.isOpen()) {
             LOG_ERROR("Falha ao criar janela: janela não está aberta");
