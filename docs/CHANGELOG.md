@@ -13,6 +13,9 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Implementação do loop principal da aplicação
 - Sistema de eventos SFML 3 compatível
 - Renderização básica com formas geométricas
+- Scripts de configuração de ambiente (`scripts/setup_environment.sh` e `.bat`) com instalação mínima via vcpkg
+- Arquivo `docs/CONTRIBUTING.md` alinhado ao guia raiz de contribuição
+- Diretórios `assets/`, `third_party/` e `build/` versionados com placeholders para facilitar estrutura de projeto
 
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
