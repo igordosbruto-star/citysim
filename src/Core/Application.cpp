@@ -1,8 +1,12 @@
 #include "Core/Application.hpp"
+
+#include "Core/Game.hpp"
 #include "Utils/Logger.hpp"
+
 #include <thread>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <optional>
+
+#include <SFML/Graphics/Color.hpp>
 
 namespace CitySim {
 
@@ -22,25 +26,25 @@ bool Application::initialize() {
     LOG_INFO("Inicializando Application...");
     
     // ✅ SFML 3: VideoMode com sf::Vector2u
-    sf::VideoMode videoMode(sf::Vector2u(Config::WINDOW_WIDTH, Config::WINDOW_HEIGHT));
-    
+    sf::VideoMode videoMode(sf::Vector2u(Config::windowWidth(), Config::windowHeight()));
+
     // ✅ SFML 3: ContextSettings
     sf::ContextSettings contextSettings;
-    
+
     // ✅ SFML 3: Window creation - create() retorna void, não bool
     try {
-        m_window.create(videoMode, "City Simulator");
-        
+        m_window.create(videoMode, Config::windowTitle());
+
         // Verifica se a janela foi criada com sucesso
         if (!m_window.isOpen()) {
             LOG_ERROR("Falha ao criar a janela - janela não está aberta");
             return false;
         }
-        
-        m_window.setFramerateLimit(Config::TARGET_FPS);
+
+        m_window.setFramerateLimit(Config::targetFps());
         m_window.setKeyRepeatEnabled(false);
-        m_window.setVerticalSyncEnabled(Config::VSYNC_ENABLED);
-        
+        m_window.setVerticalSyncEnabled(Config::vsyncEnabled());
+
     } catch (const std::exception& e) {
         LOG_ERROR_F("Exceção ao criar janela: %s", e.what());
         return false;
@@ -48,11 +52,11 @@ bool Application::initialize() {
         LOG_ERROR("Exceção desconhecida ao criar janela");
         return false;
     }
-    
-    m_targetFrameTime = 1.0f / Config::TARGET_FPS;
+
+    m_targetFrameTime = 1.0f / static_cast<float>(Config::targetFps());
     m_isInitialized = true;
     m_isRunning = true;
-    
+
     LOG_INFO("Application inicializada com sucesso");
     return true;
 }
@@ -73,12 +77,12 @@ void Application::shutdown() {
     Logger::getInstance().shutdown();
 }
 
-void Application::run() {
+void Application::run(Game& game) {
     if (!m_isInitialized) {
         LOG_ERROR("Application não inicializada");
         return;
     }
-    
+
     LOG_INFO("Iniciando loop principal...");
     
     sf::Clock frameClock;
@@ -102,12 +106,12 @@ void Application::run() {
             LOG_DEBUG_F("FPS: %.1f, DeltaTime: %.3fms", fps, deltaTime * 1000.0f);
         }
         
-        handleEvents();
-        update(deltaTime);
-        render();
-        
+        handleEvents(game);
+        update(game, deltaTime);
+        render(game);
+
         // Controle de framerate quando VSync está desativado
-        if (!Config::VSYNC_ENABLED && deltaTime < m_targetFrameTime) {
+        if (!Config::vsyncEnabled() && deltaTime < m_targetFrameTime) {
             auto sleepDuration = std::chrono::microseconds(
                 static_cast<long long>((m_targetFrameTime - deltaTime) * 1000000)
             );
@@ -118,7 +122,7 @@ void Application::run() {
     LOG_INFO("Loop principal finalizado");
 }
 
-void Application::handleEvents() {
+void Application::handleEvents(Game& game) {
     // ✅ SFML 3: pollEvent retorna std::optional
     while (std::optional<sf::Event> event = m_window.pollEvent()) {
         // ✅ SFML 3: Usar event->is<T>() e event->getIf<T>()
@@ -127,7 +131,7 @@ void Application::handleEvents() {
             quit();
         }
         else if (const sf::Event::Resized* resized = event->getIf<sf::Event::Resized>()) {
-            LOG_INFO_F("Evento: Janela redimensionada para %dx%d", 
+            LOG_INFO_F("Evento: Janela redimensionada para %dx%d",
                       resized->size.x, resized->size.y);
         }
         else if (const sf::Event::KeyPressed* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
@@ -149,48 +153,30 @@ void Application::handleEvents() {
                            mouseMoved->position.x, mouseMoved->position.y);
             }
         }
+
+        game.handleEvent(*event);
     }
 }
 
-void Application::update(float deltaTime) {
+void Application::update(Game& game, float deltaTime) {
     static float updateTimer = 0.0f;
     updateTimer += deltaTime;
-    
+
     // Log a cada 2 segundos para debug
     if (updateTimer >= 2.0f) {
         LOG_DEBUG("Update rodando...");
         updateTimer = 0.0f;
     }
+
+    game.update(deltaTime);
 }
 
-void Application::render() {
+void Application::render(Game& game) {
     // Limpa a tela com cor escura
     m_window.clear(sf::Color(30, 30, 45));
-    
-    static sf::RectangleShape testShape(sf::Vector2f(100, 100));
-    static bool initialized = false;
-    
-    if (!initialized) {
-        testShape.setFillColor(sf::Color::Green);
-        
-        // ✅ SFML 3: setPosition com sf::Vector2f
-        testShape.setPosition(sf::Vector2f(
-            Config::WINDOW_WIDTH / 2.0f - 50.0f,
-            Config::WINDOW_HEIGHT / 2.0f - 50.0f
-        ));
-        initialized = true;
-        LOG_DEBUG("Shape de teste inicializado");
-    }
-    
-    // ✅ SFML 3: Rotação com sf::degrees
-    static float rotation = 0.0f;
-    rotation += 90.0f * m_clock.getElapsedTime().asSeconds();
-    if (rotation >= 360.0f) rotation = 0.0f;
-    
-    testShape.setRotation(sf::degrees(rotation));
-    
-    // Desenha e exibe
-    m_window.draw(testShape);
+
+    game.render();
+
     m_window.display();
 }
 
