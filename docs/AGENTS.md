@@ -202,15 +202,19 @@ Antes de compilar, o agente deve preparar o ambiente executando o script abaixo:
 
 ### Linux / Codex Container
 ```bash
-chmod +x setup_environment.sh
-./setup_environment.sh
+chmod +x scripts/setup_environment.sh
+./scripts/setup_environment.sh
 ```
 
 ### Windows (local)
 ```bash
-setup_environment.bat
+/scripts/setup_environment.bat
 ```
 
+setup_commands:
+  - chmod +x setup_environment.sh
+  - ./setup_environment.sh
+  
 ---
 
 Última atualização: 04-11-2025
