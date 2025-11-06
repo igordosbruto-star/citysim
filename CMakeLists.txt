@@ -26,7 +26,13 @@ set(CITY_SIMULATOR_SOURCES
     src/Utils/Logger.cpp
     src/Core/Game.cpp
     src/Core/Config.cpp
-    
+    src/Graphics/Window.cpp
+    src/Graphics/Renderer.cpp
+    src/Graphics/Camera.cpp
+    src/Input/InputManager.cpp
+    src/Input/Keyboard.cpp
+    src/Input/Mouse.cpp
+
 )
 
 # Criar executável principal
