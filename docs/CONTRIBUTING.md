@@ -1,30 +1,81 @@
-# Guia de Contribuição — City Simulator
+# CONTRIBUTING — City Simulator
 
-> Este documento espelha o conteúdo do [CONTRIBUTING.md](../CONTRIBUTING.md) na raiz do repositório.
-> Consulte-o para a versão completa e mantenha ambos alinhados ao atualizar o processo de contribuição.
+Obrigado por querer contribuir com o **City Simulator**! 🏙️  
+Este guia explica como propor ideias, reportar bugs e enviar PRs de forma eficiente.
 
-## Visão Geral
-- Alinhe propostas ao [ROADMAP](./ROADMAP.md) e à [VISION](./VISION.md).
-- Use C++20, CMake e SFML como base técnica.
-- Priorize tech-tree funcional, simulação profunda e performance estável.
+## Como posso ajudar?
+- **Bugs**: abra uma *issue* descrevendo passos para reproduzir.
+- **Novas features**: proponha primeiro em uma *issue* explicando contexto e motivação.
+- **Docs**: melhorias no `VISION.md`, `ROADMAP.md`, tutoriais e documentação técnica.
+- **Sistemas de jogo**: sugestões para tech-tree, simulação, economia ou UI.
 
-## Passos Rápidos
-1. Abra uma issue descrevendo contexto e objetivo.
-2. Crie uma branch a partir da `main` (ex.: `feature/nome-curto`).
-3. Faça commits pequenos, no imperativo (padrão *Conventional Commits* opcional).
-4. Adicione testes quando afetar tech-tree, simulação ou economia.
-5. Atualize documentação relacionada e o [CHANGELOG](./CHANGELOG.md) (`[Unreleased]`).
-6. Abra o PR preenchendo o checklist e linkando a issue (`Closes #123`).
+## Requisitos básicos
+- **Linguagem**: C++20
+- **Build**: CMake
+- **Gráficos/Audio/Input**: SFML
+- **ECS**: Entity Component System (entt)
+- **Dados**: JSON (nlohmann/json)
+- **Arte**: Pixel art top-down (estilo RPG Maker)
 
-## Padrões Essenciais
-- Estilo moderno em C++ (RAII, `unique_ptr`, ECS com entt).
-- Meta de 60 FPS; evite regressões de performance.
-- Componentes usam `PascalCase` (tipos) e `camelCase` (funções/variáveis).
-- Assets seguem pixel art top-down.
+> **Dica importante**: Consulte o `ROADMAP.md` para alinhar sua contribuição com os marcos do projeto.
 
-## Recursos Úteis
-- [docs/SETUP.md](./SETUP.md): instalação detalhada.
-- [docs/ARCHITECTURE.md](./ARCHITECTURE.md): visão dos subsistemas.
-- [docs/AGENTS.md](./AGENTS.md): diretrizes adicionais para agentes de IA.
+## Fluxo para contribuir
+1. **Abra uma issue** (bug/feature) e descreva o objetivo.
+2. **Crie uma branch** a partir da `main`:  
+   `feature/nome-curto` ou `fix/descricao-breve`
+3. **Faça commits pequenos e claros** (ver padrão abaixo).
+4. **Inclua testes** quando alterar lógica central (tech-tree, simulação, economia).
+5. **Atualize a documentação** afetada (VISION.md, ROADMAP.md, docs técnicas).
+6. **Atualize o CHANGELOG** (seção **[Unreleased]**).
+7. **Abra o PR** linkando a issue e marcando o checklist.
 
-> Ao contribuir, você concorda com a licença MIT aplicada ao City Simulator.
+## Padrão de commits
+Use mensagens descritivas e no imperativo. Você pode seguir *Conventional Commits* (opcional), por exemplo:
+- `feat(tech-tree): adiciona sistema de ramificações exclusivas`
+- `fix(pathfinding): corrige travamento com 500+ veículos`
+- `docs(vision): atualiza metas de performance para 15k habitantes`
+- `perf(ecs): otimiza atualização de componentes de cidadãos`
+
+## Diretrizes de código (resumo)
+- **Estilo**: C++ moderno, RAII, `unique_ptr`/`shared_ptr` quando apropriado
+- **Arquitetura**: ECS para entidades (cidadãos, veículos, edifícios)
+- **Performance**: Mantenha 60 FPS como meta, otimize para grandes cidades
+- **Nomes**: `PascalCase` para tipos, `camelCase` para variáveis/funções
+- **Dados**: Estruturas eficientes para tilemaps e grafos de pathfinding
+- **Tech-tree**: Sistema modular para fácil expansão de tecnologias
+
+## Abrindo issues
+- **Bug**: passos para reproduzir, resultado esperado x obtido, logs/prints, versão/OS
+- **Feature**: problema que resolve, proposta, impacto na tech-tree/simulação, alternativas consideradas
+
+## Abrindo PRs (checklist)
+- [ ] Issue linkada (`Closes #123`)
+- [ ] Pequeno e focado (ou explique por que precisa ser maior)
+- [ ] **CHANGELOG** atualizado em **[Unreleased]**
+- [ ] Documentação atualizada (se aplicável)
+- [ ] Alinhado ao `ROADMAP.md` **ou** justificada a exceção
+- [ ] Testes passam (quando aplicável)
+
+## Documentação
+- **VISION.md**: Diretrizes de design e escopo do jogo
+- **ROADMAP.md**: Marcos de desenvolvimento e progressão
+- **AGENTS.md**: Guidelines para assistentes de IA
+- Mudanças relevantes em docs entram no CHANGELOG em **Docs**
+
+## Foco do Projeto
+Lembre-se que o City Simulator é centrado em:
+- **Tech-tree progressiva** como núcleo da jogabilidade
+- **Simulação profunda** com agentes inteligentes
+- **Performance** estável mesmo com cidades grandes
+- **Pixel art top-down** com estilo consistente
+
+## Licença
+Ao contribuir, você concorda que sua contribuição será licenciada sob **MIT** junto com o City Simulator.
+
+## Código de Conduta
+Seja respeitoso, acolhedor e colaborativo. Mantenha o foco no desenvolvimento do jogo e na construção de uma comunidade positiva.
+
+---
+
+**Última atualização:** 04-11-2025  
+**Próxima revisão:** Quinzenal ou conforme necessidade
