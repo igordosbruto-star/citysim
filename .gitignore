@@ -4,8 +4,8 @@ Thumbs.db
 desktop.ini
 
 # ==== CMake (fuja de build in-source) ====
-/build/
-/build*/
+/build/*
+/build-*/
 cmake-build-*/
 /CMakeFiles/
 /CMakeCache.txt
@@ -72,3 +72,9 @@ ipch/
 CMakeUserPresets.json
 
 # ==== Pastas extra ====
+# ==== Diretórios placeholders versionados ====
+!assets/.gitkeep
+!third_party/.gitkeep
+!build/.gitkeep
+!scripts/setup_environment.bat
+
