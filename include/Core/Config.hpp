@@ -3,18 +3,13 @@
 namespace CitySim {
 namespace Config {
 
-    // Configurações de janela
+    // Configurações da Janela
     constexpr unsigned int WINDOW_WIDTH = 1280;
     constexpr unsigned int WINDOW_HEIGHT = 720;
+    
+    // Configurações de Performance
     constexpr unsigned int TARGET_FPS = 60;
-    
-    // Configurações de renderização
-    constexpr bool VSYNC_ENABLED = true;
-    constexpr unsigned int ANTIALIASING_LEVEL = 8;
-    
-    // Configurações do mundo
-    constexpr unsigned int CHUNK_SIZE = 16;
-    constexpr unsigned int WORLD_SIZE_IN_CHUNKS = 100;
+    constexpr bool VSYNC_ENABLED = false;
 
 } // namespace Config
 } // namespace CitySim
