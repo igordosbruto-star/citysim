@@ -17,6 +17,12 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Scripts de configuração de ambiente (`scripts/setup_environment.sh` e `.bat`) com instalação mínima via vcpkg
 - Arquivo `docs/CONTRIBUTING.md` alinhado ao guia raiz de contribuição
 - Diretórios `assets/`, `third_party/` e `build/` versionados com placeholders para facilitar estrutura de projeto
+- Sistema ECS (Entity Component System) inicial
+  - Classe base Entity encapsulando funcionalidade entt
+  - Classes base de Component e componentes iniciais (Transform, Tag, Renderable)
+  - Classe base System com gerenciamento via World
+  - Implementações iniciais de RenderSystem e TransformSystem
+  - Testes unitários abrangentes para funcionalidade core do ECS
 
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
@@ -37,6 +43,30 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - Compatibilidade de build restaurada no ambiente container padrão (SFML 2.5)
  - Resolução do erro de configuração CMake causado pela incompatibilidade de versão do SFML (2.5 vs 3.x)
  - Corrigidos erros de compilação introduzidos por mudança de API entre SFML 2 -> 3 (nomes de campos de eventos, overloads e headers)
+- Correções no sistema ECS:
+  - Resolvido problema de duplicação de membros na classe World
+  - Corrigido acesso aos métodos FindEntityByName, Clear e GetSystem (movidos para público)
+  - Atualizado RenderSystem para compatibilidade com SFML 3.x (usando RenderTarget*)
+  - Corrigido estilo de janela para testes (Style::Hidden -> Style::None)
+  - Atualizado namespace do Logger para CitySim
+  - Adicionados arquivos necessários ao build dos testes (Logger.cpp)
+ - Tilemap and rendering fixes:
+   - Reworked `Tilemap` to use `sf::PrimitiveType::Triangles` (SFML 3 dropped `Quads`).
+   - Updated texture coordinate handling to use `sf::Rect` position/size members.
+   - Fixed vertex layout (6 vertices per tile) and texture mapping.
+ - Logger shutdown deadlock fixed:
+   - `Logger::shutdown()` no longer calls `log()` while holding the internal mutex to avoid resource deadlocks during teardown.
+ - Tests updated for SFML 3 API:
+   - Updated `tests/test_tilemap.cpp` and `tests/test_tilemap_advanced.cpp` to use `sf::IntRect({pos},{size})` and avoid negative index usage.
+
+### Milestones
+- [x] Marco 1 — Fundação Técnica (Engine e Estrutura Base) completo:
+  - Base técnica funcional com C++ e SFML 3
+  - Sistema de build com CMake e vcpkg
+  - Estrutura ECS implementada e testada
+  - Sistema de eventos e input funcionando
+  - Renderização base com formas e tilemap
+  - Editor com estrutura inicial
 
 ### Docs
 - `VISION.md` - Documento de visão completo com editor integrado

@@ -2,6 +2,8 @@
 #include <cstdarg>
 #include <ctime>
 #include <iomanip>
+#include <chrono>
+#include <thread>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -29,13 +31,30 @@ void Logger::initialize(const std::string& logFile) {
 }
 
 void Logger::shutdown() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    
-    if (m_logFile.is_open()) {
-        log(LogLevel::LInfo, "Shutting down logger...");
-        m_logFile.close();
+    // Formata a mensagem de shutdown uma vez (não usamos log() aqui para evitar deadlocks)
+    std::string timestamp = getCurrentTime();
+    std::string levelStr = levelToString(LogLevel::LInfo);
+    std::stringstream formattedMessage;
+    formattedMessage << "[" << timestamp << "] "
+                     << "[" << levelStr << "] "
+                     << "Shutting down logger...";
+    std::string finalMessage = formattedMessage.str();
+
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_consoleOutput) {
+            // writeToConsole doesn't take the mutex internally
+            writeToConsole(LogLevel::LInfo, finalMessage);
+        }
+
+        if (m_logFile.is_open()) {
+            m_logFile << finalMessage << std::endl;
+            m_logFile.flush();
+            m_logFile.close();
+        }
+
+        m_fileOutput = false;
     }
-    m_fileOutput = false;
 }
 
 std::string Logger::getCurrentTime() {

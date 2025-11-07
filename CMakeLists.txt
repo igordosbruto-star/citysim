@@ -8,7 +8,7 @@ endif()
 
 # ===== Opções de configuração =====
 option(BUILD_EDITOR "Build the CitySimulator editor" OFF)  # DESATIVADO por enquanto
-option(BUILD_TESTS "Build tests" OFF)                      # DESATIVADO por enquanto
+option(BUILD_TESTS "Build tests" ON)                       # ATIVADO para testes do ECS
 option(COPY_ASSETS "Copy assets to output directory" ON)
 
 # ===== Configuração de compilação =====
@@ -29,10 +29,15 @@ set(CITY_SIMULATOR_SOURCES
     src/Graphics/Window.cpp
     src/Graphics/Renderer.cpp
     src/Graphics/Camera.cpp
+    src/Graphics/Tilemap.cpp
+    src/Graphics/Tileset.cpp
     src/Input/InputManager.cpp
     src/Input/Keyboard.cpp
     src/Input/Mouse.cpp
-
+    src/ECS/Entity.cpp
+    src/ECS/World.cpp
+    src/ECS/Systems/RenderSystem.cpp
+    src/ECS/Systems/TransformSystem.cpp
 )
 
 # Criar executável principal
@@ -58,6 +63,9 @@ endif()
 
 # ===== Dependências =====
 
+# EnTT (ECS framework)
+find_package(EnTT CONFIG REQUIRED)
+
 # SFML: accept whichever SFML version is available via vcpkg (2.x or 3.x).
 # Avoid hard-coding 2.5 so vcpkg-installed SFML 3.x (e.g. 3.0.1) is accepted.
 find_package(SFML COMPONENTS Graphics Window System REQUIRED)
@@ -77,6 +85,9 @@ if(nlohmann_json_FOUND)
 else()
     message(STATUS "nlohmann_json não encontrado - recursos de JSON desativados")
 endif()
+
+# EnTT
+target_link_libraries(city-simulator PRIVATE EnTT::EnTT)
 
 # ===== Includes próprios =====
 target_include_directories(city-simulator PRIVATE
@@ -147,6 +158,55 @@ install(TARGETS city-simulator
     BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+# ===== Tests =====
+if(BUILD_TESTS)
+    enable_testing()
+    find_package(GTest REQUIRED)
+    
+    # Core Tests
+  add_executable(core-tests
+    tests/ecs/ecs_test_basic.cpp
+    tests/test_tilemap.cpp
+    tests/test_tilemap_advanced.cpp
+    src/ECS/Entity.cpp
+    src/ECS/World.cpp
+    src/ECS/Systems/RenderSystem.cpp
+    src/ECS/Systems/TransformSystem.cpp
+    src/Graphics/Tilemap.cpp
+    src/Graphics/Tileset.cpp
+    src/Utils/Logger.cpp
+  )
+    
+    target_link_libraries(core-tests PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        EnTT::EnTT
+        SFML::Graphics
+        SFML::Window
+        SFML::System
+    )
+    
+    target_include_directories(core-tests PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/include
+    )
+    
+  # Ensure test binary is available for CTest in multi-config generators (MSVC)
+  # Place the test binaries in per-config folders under the build directory.
+  set_target_properties(core-tests PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release"
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/RelWithDebInfo"
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/MinSizeRel"
+  )
+
+  # Register with CTest using the target file generator expression so CTest will find the built binary
+  add_test(
+    NAME test_core
+    COMMAND $<TARGET_FILE:core-tests>
+  )
+endif()
+
 # ===== Mensagem final de configuração =====
 message(STATUS "")
 message(STATUS "=== CitySimulator Configuration Summary ===")
@@ -166,6 +226,7 @@ else()
   set(_sfml_version "Unknown")
 endif()
 message(STATUS "  - SFML: ${_sfml_version}")
+message(STATUS "  - EnTT: ${ENTT_VERSION}")
 if(nlohmann_json_FOUND)
     message(STATUS "  - nlohmann_json: OK")
 else()

@@ -69,6 +69,10 @@ void Application::shutdown() {
     
     LOG_INFO("Encerrando Application...");
     
+    // Primeiro, paramos o loop principal
+    m_isRunning = false;
+    
+    // Liberamos os recursos na ordem inversa de criação
     if (m_renderer) {
         m_renderer.reset();
     }
@@ -81,10 +85,14 @@ void Application::shutdown() {
         m_window.close();
     }
     
+    // Marcamos a aplicação como não inicializada
     m_isInitialized = false;
-    m_isRunning = false;
     
+    // Registramos que a aplicação foi encerrada antes de desligar o logger
     LOG_INFO("Application encerrada");
+    
+    // O Logger deve ser o último a ser desligado
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Pequena pausa para garantir que todas as mensagens foram processadas
     Logger::getInstance().shutdown();
 }
 

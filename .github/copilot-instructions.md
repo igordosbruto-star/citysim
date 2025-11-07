@@ -2,7 +2,7 @@
 
 Purpose: help AI coding assistants be productive quickly in this repo. Keep answers focused, make small edits, and prefer referencing existing files listed below.
 
-- Primary language and tools: C++20, CMake, SFML, entt (ECS), vcpkg. See `CMakeLists.txt` and `CMakePresets.json` for exact options.
+- Primary language and tools: C++20, CMake, SFML(version 3.0.1), entt (ECS), vcpkg. See `CMakeLists.txt` and `CMakePresets.json` for exact options.
 
 - Where to start (single-file entry points):
   - Project overview: `README.md`, `docs/AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/SETUP.md`.

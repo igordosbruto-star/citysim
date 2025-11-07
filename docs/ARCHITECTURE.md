@@ -23,8 +23,26 @@
 
 ### Camada de Renderização
 - `TilemapRenderer` - Renderização de mapas tile-based
+  - Sistema de tiles flexível usando SFML Quads
+  - Suporte a textura única com múltiplos tiles
+  - Otimização de renderização por batching
+  - Controle dinâmico de visibilidade por tile
+  - Sistema de coordenadas baseado em grid
 - `UIRenderer` - Interface do usuário
 - `LightingSystem` - Iluminação dinâmica
+
+#### Sistema de Tiles
+O sistema de tiles implementa:
+- Gerenciamento eficiente de memória usando VertexArray
+- Coordenadas de textura automáticas por tile
+- Suporte a tiles vazios (ID -1)
+- Validação de posições e limites
+- Sistema de cache para otimização
+- Interface clara para manipulação de tiles:
+  - `Create(width, height, tileset)`: Inicialização do mapa
+  - `SetTile(x, y, tileId)`: Definição de tiles
+  - `GetTile(x, y)`: Consulta de tiles
+  - `IsValidPosition(x, y)`: Validação de coordenadas
 
 ### Camada do Editor
 - `CityEditor` - Aplicação principal do editor
