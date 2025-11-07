@@ -1,44 +1,40 @@
 #pragma once
 
-#include <entt/entt.hpp>
+#include "ECS/System.hpp"
+#include "Core/Components/PowerGridComponent.hpp"
+#include "Core/Components/NetworkNodeComponent.hpp"
 
-#include <Core/Components/PowerGridComponent.hpp>
-#include <Core/Components/NetworkNodeComponent.hpp>
+// Incluir headers da STL PRIMEIRO
+#include <queue>
+#include <unordered_set>
 
 namespace CitySim {
 
-class PowerSystem {
+class PowerSystem : public System {
 public:
-    explicit PowerSystem(entt::registry& registry);
+    PowerSystem() = default;
+    
+    bool Init(entt::registry& registry) override {
+        System::Init(registry);
+        return true;
+    }
+    
+    void Update(float deltaTime) override;
+    
+    std::string GetName() const override { return "PowerSystem"; }
 
-    void update(float dt);
-    
-    // Adiciona uma usina de energia
+    // Métodos públicos mantidos:
     void addPowerPlant(entt::entity entity, float capacity);
-    
-    // Conecta dois nós da rede elétrica
     bool connectNodes(entt::entity node1, entt::entity node2);
-    
-    // Atualiza o estado de energia de um nó
     void updateNodePowerState(entt::entity node);
-    
-    // Calcula demanda total de energia
     float calculateTotalDemand() const;
-    
-    // Calcula produção total de energia
     float calculateTotalOutput() const;
+    void propagatePower(entt::entity startNode, entt::entity gridId);
+    bool canConnect(const NetworkNodeComponent& node1, const NetworkNodeComponent& node2) const;
+    bool hasAvailablePower(entt::entity node) const;
 
 private:
-    entt::registry& m_registry;
-    
-    // Propaga energia a partir de uma usina
-    void propagatePower(entt::entity startNode, entt::entity gridId);
-    
-    // Verifica se dois nós estão próximos o suficiente para conectar
-    bool canConnect(const NetworkNodeComponent& node1, const NetworkNodeComponent& node2) const;
-    
-    // Verifica se um nó tem energia disponível
-    bool hasAvailablePower(entt::entity node) const;
+    // Removido: entt::registry& m_registry;
 };
 
 } // namespace CitySim

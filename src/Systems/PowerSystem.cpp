@@ -1,46 +1,48 @@
-#include <Core/Systems/PowerSystem.hpp>
-#include "Core/Components/PowerGridComponent.hpp"
-#include "Core/Components/NetworkNodeComponent.hpp"
+// Incluir headers da STL PRIMEIRO, antes de qualquer coisa
 #include <queue>
 #include <unordered_set>
 
+#include "Core/Systems/PowerSystem.hpp"
+#include "Core/Components/PowerGridComponent.hpp"
+#include "Core/Components/NetworkNodeComponent.hpp"
+
 namespace CitySim {
 
-PowerSystem::PowerSystem(entt::registry& registry)
-    : m_registry(registry) {
-}
-
-void PowerSystem::update(float dt) {
+void PowerSystem::Update(float deltaTime) {
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry() do System base
+    
     // Reset the power state of all nodes
-    for (auto entity : m_registry.view<PowerGridComponent>()) {
-        auto& power = m_registry.get<PowerGridComponent>(entity);
+    for (auto entity : registry.view<PowerGridComponent>()) {
+        auto& power = registry.get<PowerGridComponent>(entity);
         power.hasPower = power.isPowerPlant;
     }
 
     // Propaga energia a partir de cada usina
-    for (auto entity : m_registry.view<PowerGridComponent>()) {
-        const auto& power = m_registry.get<PowerGridComponent>(entity);
+    for (auto entity : registry.view<PowerGridComponent>()) {
+        const auto& power = registry.get<PowerGridComponent>(entity);
         if (!power.isPowerPlant) continue;
-        if (m_registry.all_of<NetworkNodeComponent>(entity)) {
+        if (registry.all_of<NetworkNodeComponent>(entity)) {
             propagatePower(entity, entity);
         }
     }
 }
 
 void PowerSystem::addPowerPlant(entt::entity entity, float capacity) {
-    if (!m_registry.all_of<PowerGridComponent>(entity)) {
-        m_registry.emplace<PowerGridComponent>(entity);
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
+    
+    if (!registry.all_of<PowerGridComponent>(entity)) {
+        registry.emplace<PowerGridComponent>(entity);
     }
     
-    auto& power = m_registry.get<PowerGridComponent>(entity);
+    auto& power = registry.get<PowerGridComponent>(entity);
     power.powerCapacity = capacity;
     power.powerOutput = capacity;
     power.isPowerPlant = true;
     power.hasPower = true;
     power.gridRoot = entity;
 
-    if (!m_registry.all_of<NetworkNodeComponent>(entity)) {
-        auto& node = m_registry.emplace<NetworkNodeComponent>(entity);
+    if (!registry.all_of<NetworkNodeComponent>(entity)) {
+        auto& node = registry.emplace<NetworkNodeComponent>(entity);
         node.nodeEntity = entity;
         node.isActive = true;
         node.isPowered = true;
@@ -48,12 +50,14 @@ void PowerSystem::addPowerPlant(entt::entity entity, float capacity) {
 }
 
 bool PowerSystem::connectNodes(entt::entity node1, entt::entity node2) {
-    if (!m_registry.valid(node1) || !m_registry.valid(node2)) {
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
+    
+    if (!registry.valid(node1) || !registry.valid(node2)) {
         return false;
     }
 
-    auto* node1Comp = m_registry.try_get<NetworkNodeComponent>(node1);
-    auto* node2Comp = m_registry.try_get<NetworkNodeComponent>(node2);
+    auto* node1Comp = registry.try_get<NetworkNodeComponent>(node1);
+    auto* node2Comp = registry.try_get<NetworkNodeComponent>(node2);
 
     if (!node1Comp || !node2Comp || !canConnect(*node1Comp, *node2Comp)) {
         return false;
@@ -73,8 +77,9 @@ bool PowerSystem::connectNodes(entt::entity node1, entt::entity node2) {
 }
 
 void PowerSystem::updateNodePowerState(entt::entity node) {
-    auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(node);
-    auto* powerComp = m_registry.try_get<PowerGridComponent>(node);
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
+    auto* nodeComp = registry.try_get<NetworkNodeComponent>(node);
+    auto* powerComp = registry.try_get<PowerGridComponent>(node);
     
     if (!nodeComp || !powerComp) {
         return;
@@ -101,8 +106,9 @@ void PowerSystem::updateNodePowerState(entt::entity node) {
 }
 
 float PowerSystem::calculateTotalDemand() const {
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
     float totalDemand = 0.0f;
-    auto view = m_registry.view<PowerGridComponent>();
+    auto view = registry.view<PowerGridComponent>();
     for (auto entity : view) {
         const auto& power = view.get<PowerGridComponent>(entity);
         if (!power.isPowerPlant) {
@@ -113,8 +119,9 @@ float PowerSystem::calculateTotalDemand() const {
 }
 
 float PowerSystem::calculateTotalOutput() const {
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
     float totalOutput = 0.0f;
-    auto view = m_registry.view<PowerGridComponent>();
+    auto view = registry.view<PowerGridComponent>();
     for (auto entity : view) {
         const auto& power = view.get<PowerGridComponent>(entity);
         if (power.isPowerPlant) {
@@ -125,6 +132,7 @@ float PowerSystem::calculateTotalOutput() const {
 }
 
 void PowerSystem::propagatePower(entt::entity startNode, entt::entity gridId) {
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
     std::queue<entt::entity> toVisit;
     std::unordered_set<entt::entity> visited;
     toVisit.push(startNode);
@@ -134,8 +142,8 @@ void PowerSystem::propagatePower(entt::entity startNode, entt::entity gridId) {
         auto current = toVisit.front();
         toVisit.pop();
 
-        auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(current);
-        auto* powerComp = m_registry.try_get<PowerGridComponent>(current);
+        auto* nodeComp = registry.try_get<NetworkNodeComponent>(current);
+        auto* powerComp = registry.try_get<PowerGridComponent>(current);
 
         if (!nodeComp || !powerComp) {
             continue;
@@ -167,8 +175,9 @@ bool PowerSystem::canConnect(const NetworkNodeComponent& node1, const NetworkNod
 }
 
 bool PowerSystem::hasAvailablePower(entt::entity node) const {
-    auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(node);
-    auto* powerComp = m_registry.try_get<PowerGridComponent>(node);
+    auto& registry = *GetRegistry(); // ← USAR GetRegistry()
+    auto* nodeComp = registry.try_get<NetworkNodeComponent>(node);
+    auto* powerComp = registry.try_get<PowerGridComponent>(node);
     
     if (!nodeComp || !powerComp) {
         return false;
