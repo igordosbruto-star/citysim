@@ -26,11 +26,13 @@ set(CITY_SIMULATOR_SOURCES
     src/Utils/Logger.cpp
     src/Core/Game.cpp
     src/Core/Config.cpp
+    src/Core/SaveSystem.cpp
     src/Graphics/Window.cpp
     src/Graphics/Renderer.cpp
     src/Graphics/Camera.cpp
     src/Graphics/Tilemap.cpp
     src/Graphics/Tileset.cpp
+    src/Graphics/Effects.cpp
     src/Input/InputManager.cpp
     src/Input/Keyboard.cpp
     src/Input/Mouse.cpp
@@ -38,15 +40,24 @@ set(CITY_SIMULATOR_SOURCES
     src/ECS/World.cpp
     src/ECS/Systems/RenderSystem.cpp
     src/ECS/Systems/TransformSystem.cpp
+    src/simulation/ZoningSystem.cpp
+    src/simulation/BuildingSystem.cpp
+    src/ui/BuildUI.cpp
+    src/Systems/PowerSystem.cpp
+    src/Systems/WaterSystem.cpp
+    src/Systems/GarbagePollutionSystem.cpp
+    src/Systems/OverlaySystem.cpp
 )
 
 # Criar executável principal
 add_executable(city-simulator ${CITY_SIMULATOR_SOURCES})
-target_compile_features(city-simulator PRIVATE cxx_std_20)
-
-# ===== Warnings e configurações do compilador =====
-if(MSVC)
-  target_compile_options(city-simulator PRIVATE /W4 /permissive- /EHsc)
+    src/Systems/AlertSystem.cpp
+    tests/vital_systems_test.cpp
+    tests/power_system_test.cpp
+    tests/water_system_test.cpp
+    tests/garbage_pollution_test.cpp
+    tests/overlay_system_test.cpp
+    tests/alert_system_test.cpp
   target_compile_definitions(city-simulator PRIVATE 
     _CRT_SECURE_NO_WARNINGS
     NOMINMAX
@@ -168,13 +179,29 @@ if(BUILD_TESTS)
     tests/ecs/ecs_test_basic.cpp
     tests/test_tilemap.cpp
     tests/test_tilemap_advanced.cpp
+    tests/test_zoning.cpp
+    tests/test_building.cpp
+    tests/test_build_ui.cpp
+    tests/test_save_load.cpp
+    tests/test_effects.cpp
+    tests/vital_systems_test.cpp
+    tests/power_system_test.cpp
+    tests/water_system_test.cpp
+    tests/garbage_pollution_test.cpp
+    tests/overlay_system_test.cpp
     src/ECS/Entity.cpp
     src/ECS/World.cpp
     src/ECS/Systems/RenderSystem.cpp
     src/ECS/Systems/TransformSystem.cpp
     src/Graphics/Tilemap.cpp
     src/Graphics/Tileset.cpp
+    src/Graphics/Effects.cpp
     src/Utils/Logger.cpp
+    src/Core/Game.cpp
+    src/Core/SaveSystem.cpp
+    src/simulation/ZoningSystem.cpp
+    src/simulation/BuildingSystem.cpp
+    src/ui/BuildUI.cpp
   )
     
     target_link_libraries(core-tests PRIVATE

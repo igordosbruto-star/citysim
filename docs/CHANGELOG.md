@@ -23,6 +23,22 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
   - Classe base System com gerenciamento via World
   - Implementações iniciais de RenderSystem e TransformSystem
   - Testes unitários abrangentes para funcionalidade core do ECS
+- Sistema de zoneamento e construção:
+  - ZoningSystem com suporte a zonas residenciais, comerciais e industriais
+  - BuildingSystem para gerenciamento de construções e demolições
+  - Testes unitários para construção e demolição
+- UI básica para construção:
+  - Botões de seleção de ferramentas com feedback visual
+  - Sombras, seleção e partículas leves para feedback ao usuário
+  - Sistema de efeitos visuais com partículas e animações
+- Sistema de salvamento e carregamento:
+  - SaveSystem usando nlohmann-json para persistência
+  - Suporte para salvar/carregar zonas e construções
+  - Testes de persistência de dados
+- Ferramentas do editor:
+  - Pincel, borracha e preenchimento para edição de tiles
+  - Painel de propriedades com edição de tiles e zonas
+  - Separação clara entre editor e motor do jogo
 
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
