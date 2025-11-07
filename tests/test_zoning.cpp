@@ -7,11 +7,10 @@ using namespace CitySim;
 class ZoningSystemTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        game = std::make_unique<Game>();
-        zoningSystem = std::make_unique<ZoningSystem>(*game);
+        zoningSystem = std::make_unique<ZoningSystem>(registry);
     }
 
-    std::unique_ptr<Game> game;
+    entt::registry registry;
     std::unique_ptr<ZoningSystem> zoningSystem;
 };
 

@@ -8,7 +8,7 @@
 
 using namespace CitySim;
 
-class ECSTestBasic : public ::testing::Test {
+class ECSTEstBasicBasic : public ::testing::Test {
 protected:
     void SetUp() override {
         world = std::make_unique<World>();
@@ -21,13 +21,13 @@ protected:
     std::unique_ptr<World> world;
 };
 
-TEST_F(ECSTest, CreateEntity) {
+TEST_F(ECSTEstBasic, CreateEntity) {
     auto entity = world->CreateEntity();
     EXPECT_TRUE(entity.IsValid());
     EXPECT_TRUE(entity.HasComponent<TransformComponent>());
 }
 
-TEST_F(ECSTest, CreateNamedEntity) {
+TEST_F(ECSTEstBasic, CreateNamedEntity) {
     const std::string name = "TestEntity";
     auto entity = world->CreateEntity(name);
     EXPECT_TRUE(entity.IsValid());
@@ -35,14 +35,14 @@ TEST_F(ECSTest, CreateNamedEntity) {
     EXPECT_EQ(entity.GetComponent<TagComponent>().tag, name);
 }
 
-TEST_F(ECSTest, DestroyEntity) {
+TEST_F(ECSTEstBasic, DestroyEntity) {
     auto entity = world->CreateEntity();
     EXPECT_TRUE(entity.IsValid());
     world->DestroyEntity(entity);
     EXPECT_FALSE(entity.IsValid());
 }
 
-TEST_F(ECSTest, AddRemoveComponent) {
+TEST_F(ECSTEstBasic, AddRemoveComponent) {
     auto entity = world->CreateEntity();
     
     // Entity should start with Transform component
@@ -62,7 +62,7 @@ TEST_F(ECSTest, AddRemoveComponent) {
     EXPECT_FALSE(entity.HasComponent<RenderableComponent>());
 }
 
-TEST_F(ECSTest, ModifyComponent) {
+TEST_F(ECSTEstBasic, ModifyComponent) {
     auto entity = world->CreateEntity();
     auto& transform = entity.GetComponent<TransformComponent>();
     
@@ -78,7 +78,7 @@ TEST_F(ECSTest, ModifyComponent) {
     EXPECT_FLOAT_EQ(transformCheck.rotation, 45.0f);
 }
 
-TEST_F(ECSTest, FindEntityByName) {
+TEST_F(ECSTEstBasic, FindEntityByName) {
     const std::string name = "UniqueEntity";
     auto entity = world->CreateEntity(name);
     
@@ -92,7 +92,7 @@ TEST_F(ECSTest, FindEntityByName) {
     EXPECT_FALSE(notFound.IsValid());
 }
 
-TEST_F(ECSTest, WorldClear) {
+TEST_F(ECSTEstBasic, WorldClear) {
     world->CreateEntity("Entity1");
     world->CreateEntity("Entity2");
     
@@ -109,7 +109,7 @@ TEST_F(ECSTest, WorldClear) {
     EXPECT_FALSE(found2.IsValid());
 }
 
-TEST_F(ECSTest, SystemManagement) {
+TEST_F(ECSTEstBasic, SystemManagement) {
     // Add systems
     auto& transformSys = world->AddSystem<TransformSystem>();
 

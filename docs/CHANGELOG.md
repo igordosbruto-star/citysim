@@ -97,6 +97,7 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
 - `AGENTS.md` - Guidelines para assistentes de IA no projeto
 - `CHANGELOG.md` - Este arquivo de histórico de mudanças
  - `.github/copilot-instructions.md` - Guia conciso para assistentes de IA (adicionado)
+- `GAMEFLOW.md` - Resumo do fluxo de funcionamento do jogo.
 
 
 [0.1.0] - 2024-XX-XX

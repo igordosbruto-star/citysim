@@ -17,7 +17,7 @@ protected:
     }
 };
 
-TEST_F(GarbagePollutionSystemTest, GarbageFacilityCreation) {
+TEST_F(GarbagePollutionTest, GarbageFacilityCreation) {
     auto entity = registry.create();
     garbageSystem->addGarbageFacility(entity, 100.0f);
 

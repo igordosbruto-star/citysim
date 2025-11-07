@@ -17,7 +17,7 @@ protected:
     void SetUp() override {
         overlaySystem = std::make_unique<OverlaySystem>(registry);
         overlaySystem->setGridSize(sf::Vector2u(10, 10));  // 10x10 grid para testes
-        window.create(sf::VideoMode(320, 320), "Test");  // 32 pixels * 10 = 320
+        window.create(sf::VideoMode({320, 320}), "Test");  // 32 pixels * 10 = 320
     }
 
     // Helper para verificar a cor do pixel
