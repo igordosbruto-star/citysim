@@ -3,9 +3,9 @@
 #include <Core/Systems/GarbagePollutionSystem.hpp>
 #include <Core/Components/PollutionComponent.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
-class GarbagePollutionSystemTest : public ::testing::Test {
+class GarbagePollutionTest : public ::testing::Test {
 protected:
     entt::registry registry;
     std::unique_ptr<GarbageSystem> garbageSystem;

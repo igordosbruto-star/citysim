@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Main container and manager for ECS entities and systems.
@@ -106,4 +106,4 @@ private:
     std::vector<std::unique_ptr<System>> m_Systems;   ///< Registered systems
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

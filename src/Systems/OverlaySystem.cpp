@@ -1,19 +1,23 @@
-#include <Core/Systems/OverlaySystem.hpp>
-#include <Core/Components/PowerGridComponent.hpp>
-#include <Core/Components/WaterGridComponent.hpp>
-#include <Core/Components/PollutionComponent.hpp>
+#include "Core/Systems/OverlaySystem.hpp"
+#include "Core/Components/PowerGridComponent.hpp"
+#include "Core/Components/WaterGridComponent.hpp"
+#include "Core/Components/PollutionComponent.hpp"
+#include <cstdint>
 
-namespace CitySimulator {
+namespace CitySim {
 
 OverlaySystem::OverlaySystem(entt::registry& registry)
     : m_registry(registry)
     , m_activeOverlay(OverlayType::Power)
     , m_isOverlayActive(false)
     , m_gridSize(1, 1)
-    , m_vertices(sf::Quads)
+    , m_vertices()  // CORREÇÃO: Inicialize sem parâmetro
     , m_colorGood(0, 255, 0, 128)   // Verde semi-transparente
     , m_colorBad(255, 0, 0, 128)    // Vermelho semi-transparente
 {
+    // CORREÇÃO: Defina o tipo primitivo depois da construção
+    
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 }
 
 void OverlaySystem::update(float dt) {
@@ -52,12 +56,7 @@ void OverlaySystem::setGridSize(const sf::Vector2u& size) {
     m_gridSize = size;
     
     // Redimensiona o array de vértices para cobrir o grid
-    m_vertices.resize(size.x * size.y * 4);  // 4 vértices por quadrado
-    
-    // Cria a textura do overlay com o novo tamanho
-    if (!m_overlayTexture.create(size.x * 32, size.y * 32)) {  // 32 pixels por célula
-        // TODO: Tratar erro de criação da textura
-    }
+    m_vertices.resize(size.x * size.y * 6);  // 4 vértices por quadrado
 }
 
 void OverlaySystem::updateVertices() {
@@ -190,11 +189,11 @@ void OverlaySystem::updatePollutionOverlay() {
 sf::Color OverlaySystem::interpolateColor(float value) const {
     // Interpola entre vermelho (0.0) e verde (1.0)
     sf::Color result;
-    result.r = static_cast<sf::Uint8>((1.0f - value) * m_colorBad.r + value * m_colorGood.r);
-    result.g = static_cast<sf::Uint8>((1.0f - value) * m_colorBad.g + value * m_colorGood.g);
-    result.b = static_cast<sf::Uint8>((1.0f - value) * m_colorBad.b + value * m_colorGood.b);
+    result.r = static_cast<uint8_t>((1.0f - value) * m_colorBad.r + value * m_colorGood.r);
+    result.g = static_cast<uint8_t>((1.0f - value) * m_colorBad.g + value * m_colorGood.g);
+    result.b = static_cast<uint8_t>((1.0f - value) * m_colorBad.b + value * m_colorGood.b);
     result.a = 128;  // 50% transparência
     return result;
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

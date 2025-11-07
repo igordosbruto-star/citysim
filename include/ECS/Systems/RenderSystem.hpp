@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief System responsible for rendering entities with RenderableComponent.

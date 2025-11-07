@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace CitySimulator {
+namespace CitySim {
 
 struct PollutionComponent {
     float pollutionLevel = 0.0f;    // Nível atual de poluição
@@ -11,4 +11,4 @@ struct PollutionComponent {
     bool isGarbageFacility = false; // Se é uma instalação de tratamento de lixo
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

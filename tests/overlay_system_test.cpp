@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <entt/entt.hpp>
-#include <Core/Systems/OverlaySystem.hpp>
-#include <Core/Components/PowerGridComponent.hpp>
-#include <Core/Components/WaterGridComponent.hpp>
-#include <Core/Components/PollutionComponent.hpp>
+#include "Core/Systems/OverlaySystem.hpp"
+#include "Core/Components/PowerGridComponent.hpp"
+#include "Core/Components/WaterGridComponent.hpp"
+#include "Core/Components/PollutionComponent.hpp"
 #include <SFML/Graphics.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class OverlaySystemTest : public ::testing::Test {
 protected:

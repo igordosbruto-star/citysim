@@ -1,10 +1,11 @@
 #pragma once
 
 #include <entt/entt.hpp>
+
 #include <Core/Components/PowerGridComponent.hpp>
 #include <Core/Components/NetworkNodeComponent.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 class PowerSystem {
 public:
@@ -31,7 +32,7 @@ private:
     entt::registry& m_registry;
     
     // Propaga energia a partir de uma usina
-    void propagatePower(entt::entity startNode, uint32_t gridId);
+    void propagatePower(entt::entity startNode, entt::entity gridId);
     
     // Verifica se dois nós estão próximos o suficiente para conectar
     bool canConnect(const NetworkNodeComponent& node1, const NetworkNodeComponent& node2) const;
@@ -40,4 +41,4 @@ private:
     bool hasAvailablePower(entt::entity node) const;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <Core/Components/PollutionComponent.hpp>
 #include <Core/Components/NetworkNodeComponent.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 class GarbageSystem {
 public:

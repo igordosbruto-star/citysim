@@ -3,7 +3,7 @@
 #include "ECS/System.hpp"
 #include <string>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief System for updating transform hierarchies and handling transform-related logic.
@@ -24,4 +24,4 @@ private:
     // TODO: Add transform hierarchy support if needed
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

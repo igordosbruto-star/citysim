@@ -2,7 +2,7 @@
 #include "ECS/Components/BasicComponents.hpp"
 #include "Utils/Logger.hpp"
 
-namespace CitySimulator {
+namespace CitySim {
 
 World::World() = default;
 

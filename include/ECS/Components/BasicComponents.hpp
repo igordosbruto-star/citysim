@@ -3,7 +3,7 @@
 #include "ECS/Component.hpp"
 #include <string>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Basic transform component storing position, rotation and scale.
@@ -42,4 +42,4 @@ struct RenderableComponent : public Component {
     RenderableComponent(bool visible, int layer = 0) : visible(visible), layer(layer) {}
 };
 
-} // namespace CitySimulator
+} // namespace CitySimu

@@ -18,7 +18,7 @@ void BuildUI::initializeButtons() {
     // Configurar cada botão
     for (int i = 0; i < 5; i++) {
         m_buttons[i].setSize(sf::Vector2f(buttonSize, buttonSize));
-        m_buttons[i].setPosition(currentX, buttonY);
+    m_buttons[i].setPosition(sf::Vector2f(currentX, buttonY));
         m_buttons[i].setOutlineThickness(2.0f);
         
         // Cores diferentes para cada ferramenta
@@ -75,7 +75,7 @@ void BuildUI::setSelectedTool(BuildTool tool) {
 bool BuildUI::isButtonPressed(BuildTool tool) const {
     const int index = static_cast<int>(tool);
     if (index >= 0 && index < 5) {
-        return InputManager::isMouseButtonPressed(sf::Mouse::Left) &&
+        return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) &&
                isMouseOverButton(tool);
     }
     return false;
@@ -84,14 +84,14 @@ bool BuildUI::isButtonPressed(BuildTool tool) const {
 bool BuildUI::isMouseOverButton(BuildTool tool) const {
     const int index = static_cast<int>(tool);
     if (index >= 0 && index < 5) {
-        const auto mousePos = InputManager::getMousePosition();
+    const auto mousePos = sf::Mouse::getPosition();
         const auto& button = m_buttons[index];
         const auto buttonBounds = sf::FloatRect(
             button.getPosition(),
             button.getSize()
         );
-        return buttonBounds.contains(static_cast<float>(mousePos.x),
-                                   static_cast<float>(mousePos.y));
+    return buttonBounds.contains(sf::Vector2<float>(static_cast<float>(mousePos.x),
+                                                        static_cast<float>(mousePos.y)));
     }
     return false;
 }

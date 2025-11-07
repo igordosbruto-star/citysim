@@ -1,5 +1,5 @@
 #include "Core/SaveSystem.hpp"
-#include "Core/Logger.hpp"
+#include "Utils/Logger.hpp"
 #include "simulation/ZoneComponent.hpp"
 #include "simulation/BuildingComponent.hpp"
 #include "simulation/GridComponent.hpp"
@@ -11,7 +11,7 @@ namespace CitySim {
 
 SaveSystem::SaveSystem(Game& game)
     : m_game(game) {
-    Logger::info("SaveSystem initialized");
+    LOG_INFO("SaveSystem initialized");
 }
 
 bool SaveSystem::saveMap(const std::string& filename) {
@@ -23,16 +23,16 @@ bool SaveSystem::saveMap(const std::string& filename) {
         
         std::ofstream file(filename);
         if (!file.is_open()) {
-            Logger::error("Failed to open file for saving: {}", filename);
+            LOG_ERROR_F("Failed to open file for saving: %s", filename.c_str());
             return false;
         }
         
         file << saveData.dump(4);
-        Logger::info("Map saved successfully to {}", filename);
+        LOG_INFO_F("Map saved successfully to %s", filename.c_str());
         return true;
     }
     catch (const std::exception& e) {
-        Logger::error("Error saving map: {}", e.what());
+        LOG_ERROR_F("Error saving map: %s", e.what());
         return false;
     }
 }
@@ -41,7 +41,7 @@ bool SaveSystem::loadMap(const std::string& filename) {
     try {
         std::ifstream file(filename);
         if (!file.is_open()) {
-            Logger::error("Failed to open file for loading: {}", filename);
+            LOG_ERROR_F("Failed to open file for loading: %s", filename.c_str());
             return false;
         }
         
@@ -50,7 +50,7 @@ bool SaveSystem::loadMap(const std::string& filename) {
         // Verificar versão
         std::string version = saveData["version"];
         if (version != "1.0") {
-            Logger::warn("Loading map with version {}, current version is 1.0", version);
+            LOG_WARNING_F("Loading map with version %s, current version is 1.0", version.c_str());
         }
         
         // Limpar dados existentes
@@ -61,11 +61,11 @@ bool SaveSystem::loadMap(const std::string& filename) {
         deserializeZones(saveData["zones"]);
         deserializeBuildings(saveData["buildings"]);
         
-        Logger::info("Map loaded successfully from {}", filename);
+        LOG_INFO_F("Map loaded successfully from %s", filename.c_str());
         return true;
     }
     catch (const std::exception& e) {
-        Logger::error("Error loading map: {}", e.what());
+        LOG_ERROR_F("Error loading map: %s", e.what());
         return false;
     }
 }

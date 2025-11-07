@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <entt/entt.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 struct WaterGridComponent {
     float waterCapacity = 0.0f;     // Capacidade máxima de água
@@ -10,7 +11,7 @@ struct WaterGridComponent {
     float waterDemand = 0.0f;       // Demanda atual de água
     bool isWaterPlant = false;      // Se é uma estação de tratamento
     bool hasWater = false;          // Se tem água disponível
-    uint32_t gridId = 0;           // ID da rede de água
+    entt::entity gridRoot{};        // Entidade raiz da rede de água
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

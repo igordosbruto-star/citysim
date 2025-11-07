@@ -1,6 +1,6 @@
 #include "ECS/Entity.hpp"
 
-namespace CitySimulator {
+namespace CitySim {
 
 Entity::Entity(entt::entity handle, entt::registry* registry)
     : m_Handle(handle)

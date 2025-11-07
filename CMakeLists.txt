@@ -51,13 +51,11 @@ set(CITY_SIMULATOR_SOURCES
 
 # Criar executável principal
 add_executable(city-simulator ${CITY_SIMULATOR_SOURCES})
-    src/Systems/AlertSystem.cpp
-    tests/vital_systems_test.cpp
-    tests/power_system_test.cpp
-    tests/water_system_test.cpp
-    tests/garbage_pollution_test.cpp
-    tests/overlay_system_test.cpp
-    tests/alert_system_test.cpp
+target_compile_features(city-simulator PRIVATE cxx_std_20)
+
+# ===== Warnings e configurações do compilador =====
+if(MSVC)
+  target_compile_options(city-simulator PRIVATE /W4 /permissive- /EHsc)
   target_compile_definitions(city-simulator PRIVATE 
     _CRT_SECURE_NO_WARNINGS
     NOMINMAX
@@ -104,6 +102,12 @@ target_link_libraries(city-simulator PRIVATE EnTT::EnTT)
 target_include_directories(city-simulator PRIVATE
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_SOURCE_DIR}/include/Core
+  ${CMAKE_SOURCE_DIR}/include/Core/Systems
+  ${CMAKE_SOURCE_DIR}/include/Core/Components
+  ${CMAKE_SOURCE_DIR}/src/Core
+  ${CMAKE_SOURCE_DIR}/src/Core/Systems
+  ${CMAKE_SOURCE_DIR}/src/Core/Components
 )
 
 # ===== Configuração de saída =====

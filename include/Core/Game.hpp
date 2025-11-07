@@ -6,6 +6,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <entt/entt.hpp>
 
 namespace CitySim {
 
@@ -51,6 +52,9 @@ public:
     Graphics::Window& window() { return *m_window; }
     const Graphics::Window& window() const { return *m_window; }
 
+    entt::registry& getRegistry() { return m_registry; }
+    const entt::registry& getRegistry() const { return m_registry; }
+
 private:
 #if SFML_VERSION_MAJOR >= 3
     void onWindowResized(const sf::Event::Resized& resizedEvent);
@@ -65,6 +69,7 @@ private:
     Input::InputManager* m_inputManager = nullptr; // Não possui, apenas observa
     State m_state = State::Uninitialized;
     sf::Clock m_simulationClock;
+    entt::registry m_registry;
 
     // Placeholder visual até os sistemas de renderização ficarem prontos
     sf::RectangleShape m_debugShape;

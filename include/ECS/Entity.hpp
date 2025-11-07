@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <entt/entt.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Represents an entity in the game world.
@@ -114,4 +114,4 @@ private:
     entt::registry* m_Registry{nullptr}; ///< Pointer to the registry owning this entity
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

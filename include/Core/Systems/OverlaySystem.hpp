@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-namespace CitySimulator {
+namespace CitySim {
 
 enum class OverlayType {
     Power,
@@ -62,4 +62,4 @@ private:
     sf::Color interpolateColor(float value) const;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

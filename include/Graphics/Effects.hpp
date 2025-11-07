@@ -9,8 +9,8 @@
 namespace CitySim {
 
 struct Particle {
-    sf::Vector2f position;
-    sf::Vector2f velocity;
+    sf::Vector2<float> position;
+    sf::Vector2<float> velocity;
     float lifetime;
     float maxLifetime;
     float scale;
@@ -33,7 +33,7 @@ public:
     void draw(sf::RenderTarget& target);
     
     // Efeitos principais
-    void addSelection(const sf::Vector2f& position, float size);
+    void addSelection(const sf::Vector2<float>& position, float size);
     void removeSelection();
     void addBuildEffect(const sf::Vector2f& position);
     void addDemolishEffect(const sf::Vector2f& position);

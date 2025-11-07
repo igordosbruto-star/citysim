@@ -3,7 +3,9 @@
 #include "ECS/World.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 
-namespace CitySimulator {
+#include <SFML/Graphics.hpp>
+
+namespace CitySim {
 
 RenderSystem::RenderSystem(sf::RenderTarget* target)
     : m_Target(target) {
@@ -13,7 +15,7 @@ bool RenderSystem::Init(entt::registry& registry) {
     return System::Init(registry);
 }
 
-void RenderSystem::Update(float deltaTime) {
+void RenderSystem::Update(float dt) {
     auto view = GetRegistry()->view<TransformComponent, RenderableComponent>();
 
     // Sort entities by render layer
@@ -57,4 +59,4 @@ void RenderSystem::Update(float deltaTime) {
     }
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

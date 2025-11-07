@@ -1,6 +1,6 @@
 #pragma once
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Base class for all components in the ECS system.
@@ -18,4 +18,4 @@ protected:
     Component() = default;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <entt/entt.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 struct PowerGridComponent {
     float powerCapacity = 0.0f;     // Capacidade máxima de energia
@@ -10,7 +11,7 @@ struct PowerGridComponent {
     float powerDemand = 0.0f;       // Demanda atual de energia
     bool isPowerPlant = false;      // Se é uma usina de energia
     bool hasPower = false;          // Se tem energia disponível
-    uint32_t gridId = 0;           // ID da rede elétrica
+    entt::entity gridRoot{};        // Entidade raiz da rede elétrica
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

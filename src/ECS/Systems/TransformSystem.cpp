@@ -2,13 +2,14 @@
 #include "ECS/Components/BasicComponents.hpp"
 #include "ECS/World.hpp"
 
-namespace CitySimulator {
 
-bool TransformSystem::Init(entt::registry& registry) {
+namespace CitySim {
+
+    bool TransformSystem::Init(entt::registry& registry) {
     return System::Init(registry);
 }
 
-void TransformSystem::Update(float deltaTime) {
+void TransformSystem::Update(float dt) {
     // Currently a no-op since we don't have transform hierarchies
     // or automatic transform updates implemented yet
     
@@ -16,4 +17,4 @@ void TransformSystem::Update(float deltaTime) {
     // TODO: Add automatic movement/rotation processing if needed
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

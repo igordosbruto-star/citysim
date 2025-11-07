@@ -3,7 +3,7 @@
 #include <Core/Components/WaterGridComponent.hpp>
 #include <Core/Components/PollutionComponent.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 AlertSystem::AlertSystem(entt::registry& registry)
     : m_registry(registry) {

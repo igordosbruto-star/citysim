@@ -1,8 +1,10 @@
 #include <Core/Systems/PowerSystem.hpp>
+#include "Core/Components/PowerGridComponent.hpp"
+#include "Core/Components/NetworkNodeComponent.hpp"
 #include <queue>
 #include <unordered_set>
 
-namespace CitySimulator {
+namespace CitySim {
 
 PowerSystem::PowerSystem(entt::registry& registry)
     : m_registry(registry) {
@@ -10,21 +12,17 @@ PowerSystem::PowerSystem(entt::registry& registry)
 
 void PowerSystem::update(float dt) {
     // Reset the power state of all nodes
-    auto view = m_registry.view<PowerGridComponent>();
-    for (auto entity : view) {
-        auto& power = view.get<PowerGridComponent>(entity);
+    for (auto entity : m_registry.view<PowerGridComponent>()) {
+        auto& power = m_registry.get<PowerGridComponent>(entity);
         power.hasPower = power.isPowerPlant;
     }
 
     // Propaga energia a partir de cada usina
-    auto powerPlants = m_registry.view<PowerGridComponent>(entt::where([](const auto& power) {
-        return power.isPowerPlant;
-    }));
-
-    for (auto entity : powerPlants) {
-        auto& power = powerPlants.get<PowerGridComponent>(entity);
+    for (auto entity : m_registry.view<PowerGridComponent>()) {
+        const auto& power = m_registry.get<PowerGridComponent>(entity);
+        if (!power.isPowerPlant) continue;
         if (m_registry.all_of<NetworkNodeComponent>(entity)) {
-            propagatePower(entity, power.gridId);
+            propagatePower(entity, entity);
         }
     }
 }
@@ -39,11 +37,11 @@ void PowerSystem::addPowerPlant(entt::entity entity, float capacity) {
     power.powerOutput = capacity;
     power.isPowerPlant = true;
     power.hasPower = true;
-    power.gridId = static_cast<uint32_t>(entity);
+    power.gridRoot = entity;
 
     if (!m_registry.all_of<NetworkNodeComponent>(entity)) {
         auto& node = m_registry.emplace<NetworkNodeComponent>(entity);
-        node.nodeId = static_cast<uint32_t>(entity);
+        node.nodeEntity = entity;
         node.isActive = true;
         node.isPowered = true;
     }
@@ -61,8 +59,8 @@ bool PowerSystem::connectNodes(entt::entity node1, entt::entity node2) {
         return false;
     }
 
-    node1Comp->connections.push_back(node2Comp->nodeId);
-    node2Comp->connections.push_back(node1Comp->nodeId);
+    node1Comp->connections.push_back(node2);
+    node2Comp->connections.push_back(node1);
 
     // Se um dos nós tem energia, atualiza o estado do outro
     if (hasAvailablePower(node1)) {
@@ -90,8 +88,7 @@ void PowerSystem::updateNodePowerState(entt::entity node) {
     }
 
     // Verifica se alguma conexão tem energia
-    for (auto connectedId : nodeComp->connections) {
-        auto connectedEntity = static_cast<entt::entity>(connectedId);
+    for (auto connectedEntity : nodeComp->connections) {
         if (hasAvailablePower(connectedEntity)) {
             nodeComp->isPowered = true;
             powerComp->hasPower = true;
@@ -127,7 +124,7 @@ float PowerSystem::calculateTotalOutput() const {
     return totalOutput;
 }
 
-void PowerSystem::propagatePower(entt::entity startNode, uint32_t gridId) {
+void PowerSystem::propagatePower(entt::entity startNode, entt::entity gridId) {
     std::queue<entt::entity> toVisit;
     std::unordered_set<entt::entity> visited;
     toVisit.push(startNode);
@@ -147,11 +144,10 @@ void PowerSystem::propagatePower(entt::entity startNode, uint32_t gridId) {
         // Marca o nó como energizado
         nodeComp->isPowered = true;
         powerComp->hasPower = true;
-        powerComp->gridId = gridId;
+        powerComp->gridRoot = gridId;
 
         // Propaga para as conexões
-        for (auto connectedId : nodeComp->connections) {
-            auto connectedEntity = static_cast<entt::entity>(connectedId);
+        for (auto connectedEntity : nodeComp->connections) {
             if (visited.find(connectedEntity) == visited.end()) {
                 visited.insert(connectedEntity);
                 toVisit.push(connectedEntity);
@@ -162,8 +158,8 @@ void PowerSystem::propagatePower(entt::entity startNode, uint32_t gridId) {
 
 bool PowerSystem::canConnect(const NetworkNodeComponent& node1, const NetworkNodeComponent& node2) const {
     // Por enquanto, apenas verifica se os nós já não estão conectados
-    for (auto connectedId : node1.connections) {
-        if (connectedId == node2.nodeId) {
+    for (auto connectedEntity : node1.connections) {
+        if (connectedEntity == node2.nodeEntity) {
             return false;
         }
     }
@@ -181,4 +177,4 @@ bool PowerSystem::hasAvailablePower(entt::entity node) const {
     return powerComp->hasPower || nodeComp->isPowered;
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

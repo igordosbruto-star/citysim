@@ -24,7 +24,7 @@ void Effects::draw(sf::RenderTarget& target) {
             shape.getFillColor().r,
             shape.getFillColor().g,
             shape.getFillColor().b,
-            static_cast<sf::Uint8>(alpha)
+            static_cast<uint8_t>(alpha)
         ));
         target.draw(shape);
     }
@@ -38,25 +38,25 @@ void Effects::draw(sf::RenderTarget& target) {
     for (const auto& particle : m_particles) {
         sf::RectangleShape shape;
         shape.setPosition(particle.position);
-        shape.setSize(sf::Vector2f(particle.scale, particle.scale));
-        shape.setOrigin(particle.scale / 2.0f, particle.scale / 2.0f);
+        shape.setSize(sf::Vector2<float>(particle.scale, particle.scale));
+        shape.setOrigin(sf::Vector2<float>(particle.scale / 2.0f, particle.scale / 2.0f));
         
         float alpha = (particle.lifetime / particle.maxLifetime) * 255.0f;
         shape.setFillColor(sf::Color(
             particle.color.r,
             particle.color.g,
             particle.color.b,
-            static_cast<sf::Uint8>(alpha)
+            static_cast<uint8_t>(alpha)
         ));
         
         target.draw(shape);
     }
 }
 
-void Effects::addSelection(const sf::Vector2f& position, float size) {
+void Effects::addSelection(const sf::Vector2<float>& position, float size) {
     m_selection = std::make_unique<sf::RectangleShape>();
     m_selection->setPosition(position);
-    m_selection->setSize(sf::Vector2f(size, size));
+    m_selection->setSize(sf::Vector2<float>(size, size));
     m_selection->setFillColor(sf::Color(255, 255, 255, 50));
     m_selection->setOutlineColor(sf::Color(255, 255, 255, 200));
     m_selection->setOutlineThickness(2.0f);
@@ -71,7 +71,7 @@ void Effects::addBuildEffect(const sf::Vector2f& position) {
     
     EffectInstance effect;
     effect.shape.setPosition(position);
-    effect.shape.setSize(sf::Vector2f(32.0f, 32.0f));
+    effect.shape.setSize(sf::Vector2<float>(32.0f, 32.0f));
     effect.shape.setFillColor(sf::Color(100, 255, 100, 100));
     effect.duration = 0.5f;
     effect.maxDuration = 0.5f;
@@ -85,7 +85,7 @@ void Effects::addDemolishEffect(const sf::Vector2f& position) {
     
     EffectInstance effect;
     effect.shape.setPosition(position);
-    effect.shape.setSize(sf::Vector2f(32.0f, 32.0f));
+    effect.shape.setSize(sf::Vector2<float>(32.0f, 32.0f));
     effect.shape.setFillColor(sf::Color(255, 100, 100, 100));
     effect.duration = 0.5f;
     effect.maxDuration = 0.5f;
@@ -99,7 +99,7 @@ void Effects::addErrorEffect(const sf::Vector2f& position) {
     
     EffectInstance effect;
     effect.shape.setPosition(position);
-    effect.shape.setSize(sf::Vector2f(32.0f, 32.0f));
+    effect.shape.setSize(sf::Vector2<float>(32.0f, 32.0f));
     effect.shape.setFillColor(sf::Color(255, 50, 50, 100));
     effect.duration = 0.3f;
     effect.maxDuration = 0.3f;
@@ -151,7 +151,7 @@ void Effects::spawnParticles(const sf::Vector2f& position, int count,
         
         float angle = angleDist(gen);
         float particleSpeed = speed * speedDist(gen);
-        p.velocity = sf::Vector2f(
+        p.velocity = sf::Vector2<float>(
             std::cos(angle) * particleSpeed,
             std::sin(angle) * particleSpeed
         );

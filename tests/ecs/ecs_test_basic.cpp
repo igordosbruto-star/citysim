@@ -6,7 +6,11 @@
 
 using namespace CitySimulator;
 
-class ECSTest : public ::testing::Test {
+#include <entt/entt.hpp>
+
+using namespace CitySim;
+
+class ECSTestBasic : public ::testing::Test {
 protected:
     void SetUp() override {
         world = std::make_unique<World>();

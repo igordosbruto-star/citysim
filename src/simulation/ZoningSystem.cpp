@@ -1,5 +1,5 @@
 #include "simulation/ZoningSystem.hpp"
-#include "Core/Logger.hpp"
+#include "Utils/Logger.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace CitySim {
@@ -7,12 +7,12 @@ namespace CitySim {
 ZoningSystem::ZoningSystem(Game& game)
     : m_game(game)
     , m_registry(game.getRegistry()) {
-    Logger::info("ZoningSystem initialized");
+    LOG_INFO("ZoningSystem initialized");
 }
 
 bool ZoningSystem::setZone(const sf::Vector2i& position, ZoneType type) {
     if (!isValidPosition(position)) {
-        Logger::warn("Attempted to set zone at invalid position: ({}, {})", position.x, position.y);
+        LOG_WARNING_F("Attempted to set zone at invalid position: (%d, %d)", position.x, position.y);
         return false;
     }
 
@@ -25,10 +25,9 @@ bool ZoningSystem::setZone(const sf::Vector2i& position, ZoneType type) {
     // Criar nova entidade de zona se o tipo não for None
     if (type != ZoneType::None) {
         createZoneEntity(position, type);
-        Logger::info("Created {} zone at position ({}, {})", 
-            type == ZoneType::Residential ? "residential" : 
-            type == ZoneType::Commercial ? "commercial" : "industrial",
-            position.x, position.y);
+        const char* zoneTypeStr = type == ZoneType::Residential ? "residential" : 
+                                  type == ZoneType::Commercial ? "commercial" : "industrial";
+        LOG_INFO_F("Created %s zone at position (%d, %d)", zoneTypeStr, position.x, position.y);
     }
 
     return true;
@@ -38,7 +37,7 @@ bool ZoningSystem::removeZone(const sf::Vector2i& position) {
     entt::entity entity = findZoneEntityAt(position);
     if (entity != entt::null) {
         destroyZoneEntity(entity);
-        Logger::info("Removed zone at position ({}, {})", position.x, position.y);
+        LOG_INFO_F("Removed zone at position (%d, %d)", position.x, position.y);
         return true;
     }
     return false;

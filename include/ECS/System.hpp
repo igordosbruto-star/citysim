@@ -6,7 +6,7 @@
 #include <memory>
 #include <entt/entt.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Base class for all ECS systems.
@@ -66,4 +66,4 @@ private:
     entt::registry* m_Registry = nullptr;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim
