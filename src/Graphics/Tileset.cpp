@@ -1,7 +1,7 @@
 #include "Graphics/Tileset.hpp"
 #include <stdexcept>
 
-namespace CitySimulator {
+namespace CitySim {
 
 Tileset::Tileset(std::shared_ptr<sf::Texture> texture, int tileWidth, int tileHeight)
     : m_Texture(texture)
@@ -21,4 +21,4 @@ const Tile& Tileset::GetTile(size_t id) const {
     return m_Tiles[id];
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

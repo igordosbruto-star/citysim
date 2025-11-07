@@ -40,4 +40,4 @@ private:
     bool m_DebugRenderEnabled = false;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

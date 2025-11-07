@@ -2,7 +2,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 bool Tilemap::Create(unsigned int width, unsigned int height, const Tileset& tileset) {
     m_Width = width;
@@ -108,4 +108,4 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_Vertices, states);
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

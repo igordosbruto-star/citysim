@@ -4,7 +4,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <memory>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Representa um tile individual com suas propriedades
@@ -86,4 +86,4 @@ inline Tile::Flags operator~(Tile::Flags a) {
     return static_cast<Tile::Flags>(~static_cast<int>(a));
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

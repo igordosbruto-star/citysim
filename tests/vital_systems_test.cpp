@@ -6,7 +6,7 @@
 #include <Core/Components/PollutionComponent.hpp>
 #include <Core/Components/NetworkNodeComponent.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class VitalSystemsTest : public ::testing::Test {
 protected:

@@ -2,7 +2,7 @@
 #include <entt/entt.hpp>
 #include <Core/Systems/PowerSystem.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class PowerSystemTest : public ::testing::Test {
 protected:

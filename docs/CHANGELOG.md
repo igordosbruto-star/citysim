@@ -50,6 +50,10 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
  - Compatibilidade SFML 3: adaptados `VideoMode`, `Transformable::setRotation`, `Window::create` e eventos de teclado
 	 - Arquivos modificados: `CMakeLists.txt`, `src/Core/Application.cpp`, `src/Core/Game.cpp`, `src/Graphics/Window.cpp`, `src/Input/Keyboard.cpp`
 
+ - Normalizado o namespace top-level de `CitySimulator` para `CitySim` em múltiplos headers e fontes C++ (ex.: `include/Core/Components/*`, `include/Core/Systems/*`, `src/Systems/*`, `include/Graphics/*`, `src/Graphics/*`, `src/ECS/*`).
+ - Corrigidos conflitos entre declarações e implementações de namespace em `OverlaySystem` e `AlertSystem` (header/CPP alinhados).
+ - Atualizados testes para usar `using namespace CitySim;` e corrigido estilo de includes para headers do projeto (angulares -> aspas) em `tests/*` para melhorar resolução de includes durante build.
+
 ### Fixed
 - Erros de compilação com VideoMode no SFML 3
 - Problemas com métodos setPosition e setRotation
@@ -66,6 +70,8 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
   - Corrigido estilo de janela para testes (Style::Hidden -> Style::None)
   - Atualizado namespace do Logger para CitySim
   - Adicionados arquivos necessários ao build dos testes (Logger.cpp)
+ - Corrigidos erros de compilação causados por inconsistências de namespace (`CitySimulator` vs `CitySim`) e comentários de fechamento de namespace incorretos em diversos arquivos (ex.: `src/ECS/Entity.cpp`, `src/ECS/World.cpp`, `include/Core/Components/*`, `include/Graphics/*`).
+ - Ajustes de includes e visibilidade em testes que impediam compilação consistente em builds locais (Debug/Release).
  - Tilemap and rendering fixes:
    - Reworked `Tilemap` to use `sf::PrimitiveType::Triangles` (SFML 3 dropped `Quads`).
    - Updated texture coordinate handling to use `sf::Rect` position/size members.

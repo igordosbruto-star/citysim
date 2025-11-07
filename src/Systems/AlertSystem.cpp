@@ -157,4 +157,4 @@ void AlertSystem::updateAlertVisual(Alert& alert, float dt) {
     }
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

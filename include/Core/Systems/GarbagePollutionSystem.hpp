@@ -52,4 +52,4 @@ private:
     static constexpr float MAX_POLLUTION_RADIUS = 10.0f;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

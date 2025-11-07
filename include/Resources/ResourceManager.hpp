@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <stdexcept>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Template base para gerenciamento de recursos
@@ -74,4 +74,4 @@ private:
     std::unordered_map<std::string, std::shared_ptr<Resource>> m_Resources;
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

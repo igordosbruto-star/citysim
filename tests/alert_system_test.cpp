@@ -5,7 +5,7 @@
 #include <Core/Components/WaterGridComponent.hpp>
 #include <Core/Components/PollutionComponent.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class AlertSystemTest : public ::testing::Test {
 protected:
@@ -15,7 +15,7 @@ protected:
 
     void SetUp() override {
         alertSystem = std::make_unique<AlertSystem>(registry);
-        window.create(sf::VideoMode(800, 600), "Test");
+        window.create(sf::VideoMode({800, 600}), "Test");
     }
 };
 

@@ -6,7 +6,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <vector>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Representa um mapa de tiles 2D que pode ser renderizado
@@ -78,4 +78,4 @@ private:
     unsigned int m_Height{0};           ///< Altura do mapa em tiles
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

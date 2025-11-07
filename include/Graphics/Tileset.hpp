@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Representa um conjunto de tiles que podem ser usados em um tilemap
@@ -56,4 +56,4 @@ private:
     int m_TileHeight{0};                         ///< Altura de cada tile em pixels
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

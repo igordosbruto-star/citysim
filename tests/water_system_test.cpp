@@ -2,7 +2,7 @@
 #include <entt/entt.hpp>
 #include <Core/Systems/WaterSystem.hpp>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class WaterSystemTest : public ::testing::Test {
 protected:

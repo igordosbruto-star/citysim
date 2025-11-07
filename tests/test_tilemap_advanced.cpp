@@ -2,7 +2,7 @@
 #include "Graphics/Tilemap.hpp"
 #include <SFML/Graphics.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 class TilemapAdvancedTest : public ::testing::Test {
 protected:
@@ -68,4 +68,4 @@ TEST_F(TilemapAdvancedTest, TilesetAssociation) {
     EXPECT_TRUE(m_tilemap->Create(4, 4, *m_tileset));
 }
 
-} // namespace CitySimulator
+} // namespace CitySim

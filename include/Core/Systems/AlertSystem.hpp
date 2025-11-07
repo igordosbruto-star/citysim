@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-namespace CitySimulator {
+namespace CitySim {
 
 enum class AlertType {
     NoPower,
@@ -64,4 +64,4 @@ private:
     void updateAlertVisual(Alert& alert, float dt);
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

@@ -2,7 +2,7 @@
 #include "Graphics/Tilemap.hpp"
 #include <memory>
 
-using namespace CitySimulator;
+using namespace CitySim;
 
 class TilemapTest : public ::testing::Test {
 protected:

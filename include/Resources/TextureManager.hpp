@@ -3,7 +3,7 @@
 #include "Resources/ResourceManager.hpp"
 #include <SFML/Graphics/Texture.hpp>
 
-namespace CitySimulator {
+namespace CitySim {
 
 /**
  * @brief Gerenciador especializado para texturas SFML
@@ -15,4 +15,4 @@ protected:
     }
 };
 
-} // namespace CitySimulator
+} // namespace CitySim

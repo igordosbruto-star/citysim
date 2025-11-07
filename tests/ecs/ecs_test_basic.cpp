@@ -4,8 +4,6 @@
 #include "ECS/Systems/RenderSystem.hpp"
 #include "ECS/Systems/TransformSystem.hpp"
 
-using namespace CitySimulator;
-
 #include <entt/entt.hpp>
 
 using namespace CitySim;
