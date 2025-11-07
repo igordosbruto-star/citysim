@@ -51,6 +51,14 @@ bool Game::initialize() {
     m_state = State::Running;
 
     LOG_INFO("Game inicializado");
+
+    // INTEGRAÇÃO DO WORLD ECS
+    if (!m_world.InitSystems()) {
+        LOG_ERROR("Failed to initialize ECS systems");
+        return false;
+    }
+    
+
     return true;
 }
 
@@ -85,6 +93,10 @@ void Game::update(float deltaTime) {
         return;
     }
 
+    // INTEGRAÇÃO: Atualizar todos os sistemas ECS
+    m_world.Update(deltaTime);  //
+
+    
     if (m_inputManager && m_inputManager->keyboard().wasPressed(sf::Keyboard::Key::P)) {
         if (isPaused()) {
             resume();
@@ -167,5 +179,6 @@ void Game::updateDebugVisual(float deltaTime) {
     m_debugShape.setRotation(m_debugShapeRotation);
 #endif
 }
+
 
 } // namespace CitySim

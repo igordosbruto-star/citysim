@@ -8,6 +8,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <entt/entt.hpp>
 
+#include "ECS/World.hpp"
+
 namespace CitySim {
 
 namespace Graphics {
@@ -45,6 +47,8 @@ public:
     void pause();
     void resume();
 
+    void registerSystems();
+
     bool isInitialized() const { return m_state != State::Uninitialized; }
     bool isPaused() const { return m_state == State::Paused; }
     State state() const { return m_state; }
@@ -54,6 +58,7 @@ public:
 
     entt::registry& getRegistry() { return m_registry; }
     const entt::registry& getRegistry() const { return m_registry; }
+    
 
 private:
 #if SFML_VERSION_MAJOR >= 3
@@ -70,6 +75,7 @@ private:
     State m_state = State::Uninitialized;
     sf::Clock m_simulationClock;
     entt::registry m_registry;
+    World m_world;
 
     // Placeholder visual até os sistemas de renderização ficarem prontos
     sf::RectangleShape m_debugShape;
