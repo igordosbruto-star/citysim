@@ -9,6 +9,15 @@
 #include <entt/entt.hpp>
 
 #include "ECS/World.hpp"
+#include "ECS/Systems/RenderSystem.hpp"
+#include "ECS/Systems/TransformSystem.hpp"
+#include "Systems/PowerSystem.hpp"
+#include "Systems/WaterSystem.hpp"
+#include "Systems/GarbageSystem.hpp"
+#include "Systems/PollutionSystem.hpp"
+#include "Systems/AlertSystem.hpp"
+#include "Systems/OverlaySystem.hpp"
+#include "Graphics/Tilemap.hpp"
 
 namespace CitySim {
 
@@ -21,10 +30,6 @@ namespace Input {
 class InputManager;
 }
 
-// Gerenciador central da simulação. Responsável por coordenar
-// sistemas de gameplay, simulação e renderização dentro do loop da
-// Application. Mantém um ciclo de vida explícito para facilitar a
-// integração de futuros subsistemas (ECS, UI, etc.).
 class Game {
 public:
     enum class State {
@@ -47,8 +52,6 @@ public:
     void pause();
     void resume();
 
-    void registerSystems();
-
     bool isInitialized() const { return m_state != State::Uninitialized; }
     bool isPaused() const { return m_state == State::Paused; }
     State state() const { return m_state; }
@@ -58,7 +61,6 @@ public:
 
     entt::registry& getRegistry() { return m_registry; }
     const entt::registry& getRegistry() const { return m_registry; }
-    
 
 private:
 #if SFML_VERSION_MAJOR >= 3
@@ -67,17 +69,40 @@ private:
     void onWindowResized(const sf::Event::SizeEvent& resizedEvent);
 #endif
     void updateDebugVisual(float deltaTime);
+    
+    // Funções de inicialização
+    bool initializeECS();
+    bool initializeTilemap();
+    void setupDebugVisual();
+    void togglePause();
+
+    // Funções de renderização específicas
+    void renderECS();
+    void renderNonECS();
 
 private:
-    Graphics::Window* m_window = nullptr; // Não possui, apenas observa
-    Graphics::Renderer* m_renderer = nullptr; // Não possui, apenas observa
-    Input::InputManager* m_inputManager = nullptr; // Não possui, apenas observa
+    Graphics::Window* m_window = nullptr;
+    Graphics::Renderer* m_renderer = nullptr;
+    Input::InputManager* m_inputManager = nullptr;
     State m_state = State::Uninitialized;
     sf::Clock m_simulationClock;
     entt::registry m_registry;
     World m_world;
 
-    // Placeholder visual até os sistemas de renderização ficarem prontos
+    // Sistemas ECS
+    RenderSystem* m_renderSystem = nullptr;
+    TransformSystem* m_transformSystem = nullptr;
+    PowerSystem* m_powerSystem = nullptr;
+    WaterSystem* m_waterSystem = nullptr;
+    GarbageSystem* m_garbageSystem = nullptr;
+    PollutionSystem* m_pollutionSystem = nullptr;
+    AlertSystem* m_alertSystem = nullptr;
+    OverlaySystem* m_overlaySystem = nullptr;
+
+    // Tilemap (não-ECS por enquanto)
+    std::unique_ptr<Tilemap> m_tilemap;
+
+    // Debug visual
     sf::RectangleShape m_debugShape;
     float m_debugShapeRotation = 0.0f;
     bool m_debugShapeInitialized = false;

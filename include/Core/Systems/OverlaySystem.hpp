@@ -1,9 +1,8 @@
 #pragma once
 
+#include "ECS/System.hpp"
 #include <SFML/Graphics.hpp>
-#include <entt/entt.hpp>
 #include <vector>
-#include <memory>
 
 namespace CitySim {
 
@@ -13,12 +12,19 @@ enum class OverlayType {
     Pollution
 };
 
-class OverlaySystem {
+class OverlaySystem : public System {
 public:
-    explicit OverlaySystem(entt::registry& registry);
-
-    // Atualiza o overlay
-    void update(float dt);
+    OverlaySystem() = default;
+    
+    bool Init(entt::registry& registry) override {
+        System::Init(registry);
+        m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+        return true;
+    }
+    
+    void Update(float deltaTime) override;
+    
+    std::string GetName() const override { return "OverlaySystem"; }
 
     // Renderiza o overlay ativo
     void render(sf::RenderTarget& target);
@@ -36,29 +42,18 @@ public:
     void setGridSize(const sf::Vector2u& size);
 
 private:
-    entt::registry& m_registry;
-    OverlayType m_activeOverlay;
-    bool m_isOverlayActive;
+    OverlayType m_activeOverlay = OverlayType::Power;
+    bool m_isOverlayActive = false;
     
-    sf::Vector2u m_gridSize;
-    sf::RenderTexture m_overlayTexture;
+    sf::Vector2u m_gridSize{1, 1};
     sf::VertexArray m_vertices;
-    sf::Color m_colorGood;
-    sf::Color m_colorBad;
+    sf::Color m_colorGood{0, 255, 0, 128};
+    sf::Color m_colorBad{255, 0, 0, 128};
     
-    // Atualiza os vértices do overlay
     void updateVertices();
-    
-    // Atualiza o overlay de energia
     void updatePowerOverlay();
-    
-    // Atualiza o overlay de água
     void updateWaterOverlay();
-    
-    // Atualiza o overlay de poluição
     void updatePollutionOverlay();
-    
-    // Interpola cor baseado no valor (0.0f a 1.0f)
     sf::Color interpolateColor(float value) const;
 };
 

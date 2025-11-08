@@ -1,35 +1,34 @@
 #pragma once
 
-#include <entt/entt.hpp>
-#include <Core/Components/WaterGridComponent.hpp>
-#include <Core/Components/NetworkNodeComponent.hpp>
+#include "ECS/System.hpp"
+#include "Core/Components/WaterGridComponent.hpp"
+#include "Core/Components/NetworkNodeComponent.hpp"
 
 namespace CitySim {
 
-class WaterSystem {
+class WaterSystem : public System {
 public:
-    explicit WaterSystem(entt::registry& registry);
+    WaterSystem() = default;
 
-    void update(float dt);
-    
-    // Adiciona uma estação de tratamento de água
+    bool Init(entt::registry& registry) override {
+        System::Init(registry);
+        return true;
+    }
+
+    void Update(float deltaTime) override;
+
+    std::string GetName() const override { return "WaterSystem"; }
+
+    // Métodos públicos mantidos:
     void addWaterPlant(entt::entity entity, float capacity);
-    
-    // Conecta dois nós da rede de água
     bool connectNodes(entt::entity node1, entt::entity node2);
-    
-    // Atualiza o estado de água de um nó
     void updateNodeWaterState(entt::entity node);
-    
-    // Calcula demanda total de água
     float calculateTotalDemand() const;
-    
-    // Calcula produção total de água
     float calculateTotalOutput() const;
 
 private:
-    entt::registry& m_registry;
-    
+    // Removido: entt::registry& m_registry;
+
     // Propaga água a partir de uma estação
     void propagateWater(entt::entity startNode, entt::entity gridId);
     

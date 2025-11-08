@@ -1,10 +1,9 @@
 #pragma once
 
+#include "ECS/System.hpp"
 #include <SFML/Graphics.hpp>
-#include <entt/entt.hpp>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace CitySim {
 
@@ -25,11 +24,21 @@ struct Alert {
         : type(t), position(pos), duration(0.0f), isActive(true) {}
 };
 
-class AlertSystem {
+class AlertSystem : public System {
 public:
-    explicit AlertSystem(entt::registry& registry);
+    AlertSystem() = default;
+    
+    bool Init(entt::registry& registry) override {
+        System::Init(registry);
+        loadTextures();
+        return true;
+    }
+    
+    void Update(float deltaTime) override;
+    
+    std::string GetName() const override { return "AlertSystem"; }
 
-    void update(float dt);
+    // Renderiza os alertas
     void render(sf::RenderTarget& target);
     
     // Adiciona um novo alerta
@@ -40,20 +49,16 @@ public:
     
     // Retorna o número de alertas ativos
     size_t getActiveAlertCount() const;
-    
-    // Carrega as texturas dos ícones
-    bool loadTextures();
 
 private:
-    entt::registry& m_registry;
     std::vector<Alert> m_alerts;
     
     sf::Texture m_noPowerTexture;
     sf::Texture m_noWaterTexture;
     sf::Texture m_pollutionTexture;
     
-    static constexpr float ALERT_DURATION = 5.0f;  // Duração de cada alerta em segundos
-    static constexpr float ALERT_BLINK_RATE = 0.5f; // Taxa de piscada em segundos
+    static constexpr float ALERT_DURATION = 5.0f;
+    static constexpr float ALERT_BLINK_RATE = 0.5f;
     
     // Verifica a necessidade de alertas
     void checkPowerAlerts();
@@ -62,6 +67,9 @@ private:
     
     // Atualiza a visualização de um alerta
     void updateAlertVisual(Alert& alert, float dt);
+    
+    // Carrega as texturas dos ícones
+    bool loadTextures();
 };
 
 } // namespace CitySim

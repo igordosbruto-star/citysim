@@ -47,6 +47,9 @@ set(CITY_SIMULATOR_SOURCES
     src/Systems/WaterSystem.cpp
     src/Systems/GarbagePollutionSystem.cpp
     src/Systems/OverlaySystem.cpp
+    src/Systems/AlertSystem.cpp
+    src/Systems/GarbageSystem.cpp
+    src/Systems/PollutionSystem.cpp
 )
 
 # Criar executável principal

@@ -1,46 +1,44 @@
-#include <Core/Systems/WaterSystem.hpp>
-#include "Core/Components/WaterGridComponent.hpp"
-#include "Core/Components/NetworkNodeComponent.hpp"
+#include "Core/Systems/WaterSystem.hpp"
 #include <queue>
 #include <unordered_set>
 
 namespace CitySim {
 
-WaterSystem::WaterSystem(entt::registry& registry)
-    : m_registry(registry) {
-}
-
-void WaterSystem::update(float dt) {
+void WaterSystem::Update(float deltaTime) {
+    auto& registry = *GetRegistry();
+    
     // Reset the water state of all nodes
-    for (auto entity : m_registry.view<WaterGridComponent>()) {
-        auto& water = m_registry.get<WaterGridComponent>(entity);
+    for (auto entity : registry.view<WaterGridComponent>()) {
+        auto& water = registry.get<WaterGridComponent>(entity);
         water.hasWater = water.isWaterPlant;
     }
 
     // Propaga água a partir de cada estação
-    for (auto entity : m_registry.view<WaterGridComponent>()) {
-        const auto& water = m_registry.get<WaterGridComponent>(entity);
+    for (auto entity : registry.view<WaterGridComponent>()) {
+        const auto& water = registry.get<WaterGridComponent>(entity);
         if (!water.isWaterPlant) continue;
-        if (m_registry.all_of<NetworkNodeComponent>(entity)) {
+        if (registry.all_of<NetworkNodeComponent>(entity)) {
             propagateWater(entity, entity);
         }
     }
 }
 
 void WaterSystem::addWaterPlant(entt::entity entity, float capacity) {
-    if (!m_registry.all_of<WaterGridComponent>(entity)) {
-        m_registry.emplace<WaterGridComponent>(entity);
+    auto& registry = *GetRegistry();
+    
+    if (!registry.all_of<WaterGridComponent>(entity)) {
+        registry.emplace<WaterGridComponent>(entity);
     }
     
-    auto& water = m_registry.get<WaterGridComponent>(entity);
+    auto& water = registry.get<WaterGridComponent>(entity);
     water.waterCapacity = capacity;
     water.waterOutput = capacity;
     water.isWaterPlant = true;
     water.hasWater = true;
     water.gridRoot = entity;
 
-    if (!m_registry.all_of<NetworkNodeComponent>(entity)) {
-        auto& node = m_registry.emplace<NetworkNodeComponent>(entity);
+    if (!registry.all_of<NetworkNodeComponent>(entity)) {
+        auto& node = registry.emplace<NetworkNodeComponent>(entity);
         node.nodeEntity = entity;
         node.isActive = true;
         node.hasWater = true;
@@ -48,12 +46,14 @@ void WaterSystem::addWaterPlant(entt::entity entity, float capacity) {
 }
 
 bool WaterSystem::connectNodes(entt::entity node1, entt::entity node2) {
-    if (!m_registry.valid(node1) || !m_registry.valid(node2)) {
+    auto& registry = *GetRegistry();
+    
+    if (!registry.valid(node1) || !registry.valid(node2)) {
         return false;
     }
 
-    auto* node1Comp = m_registry.try_get<NetworkNodeComponent>(node1);
-    auto* node2Comp = m_registry.try_get<NetworkNodeComponent>(node2);
+    auto* node1Comp = registry.try_get<NetworkNodeComponent>(node1);
+    auto* node2Comp = registry.try_get<NetworkNodeComponent>(node2);
 
     if (!node1Comp || !node2Comp || !canConnect(*node1Comp, *node2Comp)) {
         return false;
@@ -73,8 +73,9 @@ bool WaterSystem::connectNodes(entt::entity node1, entt::entity node2) {
 }
 
 void WaterSystem::updateNodeWaterState(entt::entity node) {
-    auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(node);
-    auto* waterComp = m_registry.try_get<WaterGridComponent>(node);
+    auto& registry = *GetRegistry();
+    auto* nodeComp = registry.try_get<NetworkNodeComponent>(node);
+    auto* waterComp = registry.try_get<WaterGridComponent>(node);
     
     if (!nodeComp || !waterComp) {
         return;
@@ -101,8 +102,9 @@ void WaterSystem::updateNodeWaterState(entt::entity node) {
 }
 
 float WaterSystem::calculateTotalDemand() const {
+    auto& registry = *GetRegistry();
     float totalDemand = 0.0f;
-    auto view = m_registry.view<WaterGridComponent>();
+    auto view = registry.view<WaterGridComponent>();
     for (auto entity : view) {
         const auto& water = view.get<WaterGridComponent>(entity);
         if (!water.isWaterPlant) {
@@ -113,8 +115,9 @@ float WaterSystem::calculateTotalDemand() const {
 }
 
 float WaterSystem::calculateTotalOutput() const {
+    auto& registry = *GetRegistry();
     float totalOutput = 0.0f;
-    auto view = m_registry.view<WaterGridComponent>();
+    auto view = registry.view<WaterGridComponent>();
     for (auto entity : view) {
         const auto& water = view.get<WaterGridComponent>(entity);
         if (water.isWaterPlant) {
@@ -125,6 +128,7 @@ float WaterSystem::calculateTotalOutput() const {
 }
 
 void WaterSystem::propagateWater(entt::entity startNode, entt::entity gridId) {
+    auto& registry = *GetRegistry();
     std::queue<entt::entity> toVisit;
     std::unordered_set<entt::entity> visited;
     toVisit.push(startNode);
@@ -134,8 +138,8 @@ void WaterSystem::propagateWater(entt::entity startNode, entt::entity gridId) {
         auto current = toVisit.front();
         toVisit.pop();
 
-        auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(current);
-        auto* waterComp = m_registry.try_get<WaterGridComponent>(current);
+        auto* nodeComp = registry.try_get<NetworkNodeComponent>(current);
+        auto* waterComp = registry.try_get<WaterGridComponent>(current);
 
         if (!nodeComp || !waterComp) {
             continue;
@@ -144,7 +148,7 @@ void WaterSystem::propagateWater(entt::entity startNode, entt::entity gridId) {
         // Marca o nó como tendo água
         nodeComp->hasWater = true;
         waterComp->hasWater = true;
-    waterComp->gridRoot = gridId;
+        waterComp->gridRoot = gridId;
 
         // Propaga para as conexões
         for (auto connectedEntity : nodeComp->connections) {
@@ -167,8 +171,9 @@ bool WaterSystem::canConnect(const NetworkNodeComponent& node1, const NetworkNod
 }
 
 bool WaterSystem::hasAvailableWater(entt::entity node) const {
-    auto* nodeComp = m_registry.try_get<NetworkNodeComponent>(node);
-    auto* waterComp = m_registry.try_get<WaterGridComponent>(node);
+    auto& registry = *GetRegistry();
+    auto* nodeComp = registry.try_get<NetworkNodeComponent>(node);
+    auto* waterComp = registry.try_get<WaterGridComponent>(node);
     
     if (!nodeComp || !waterComp) {
         return false;

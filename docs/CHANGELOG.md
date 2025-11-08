@@ -39,6 +39,31 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
   - Pincel, borracha e preenchimento para edição de tiles
   - Painel de propriedades com edição de tiles e zonas
   - Separação clara entre editor e motor do jogo
+- **Integração completa do sistema ECS no loop principal**:
+  - Conexão do World ECS com Game::update() e Game::render()
+  - Registro automático de sistemas ECS (Transform, Render, Power)
+  - Criação de entidades de teste para validação
+- **Sistemas de simulação integrados**:
+  - PowerSystem: Rede elétrica com propagação e gerenciamento de demanda
+  - WaterSystem: Sistema de distribuição de água com estações de tratamento
+  - GarbagePollutionSystem: Coleta de lixo e simulação de poluição
+  - AlertSystem: Sistema de alertas visuais para problemas na cidade
+  - OverlaySystem: Overlays para energia, água e poluição
+- **Sistema de renderização unificado**:
+  - Integração do Tilemap como fundo da simulação
+  - Renderização hierárquica: Tilemap → ECS → Overlays → Alertas → Debug
+  - Suporte a múltiplas camadas de renderização
+- **Arquitetura de inicialização modular**:
+  - Funções separadas para ECS, tilemap e sistemas não-ECS
+  - Gerenciamento automático de dependências entre sistemas
+  - Logs detalhados de inicialização e erro
+- **Novos componentes ECS**:
+  - TransformComponent: Posição, rotação e escala
+  - RenderableComponent: Controle de visibilidade e camadas
+  - PowerGridComponent: Dados de rede elétrica
+  - NetworkNodeComponent: Conexões entre entidades de rede
+- **Sistema de pause/unpause unificado** com togglePause()
+- **Smart pointers** para gerenciamento automático de recursos não-ECS
 
 ### Changed
 - Atualizado padrão para C++20 em toda a codebase
@@ -49,10 +74,25 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
  - CMake: relaxado requisito de versão do SFML e correção de componentes (aceita SFML 3 via vcpkg)
  - Compatibilidade SFML 3: adaptados `VideoMode`, `Transformable::setRotation`, `Window::create` e eventos de teclado
 	 - Arquivos modificados: `CMakeLists.txt`, `src/Core/Application.cpp`, `src/Core/Game.cpp`, `src/Graphics/Window.cpp`, `src/Input/Keyboard.cpp`
-
  - Normalizado o namespace top-level de `CitySimulator` para `CitySim` em múltiplos headers e fontes C++ (ex.: `include/Core/Components/*`, `include/Core/Systems/*`, `src/Systems/*`, `include/Graphics/*`, `src/Graphics/*`, `src/ECS/*`).
  - Corrigidos conflitos entre declarações e implementações de namespace em `OverlaySystem` e `AlertSystem` (header/CPP alinhados).
  - Atualizados testes para usar `using namespace CitySim;` e corrigido estilo de includes para headers do projeto (angulares -> aspas) em `tests/*` para melhorar resolução de includes durante build.
+- **Refatoração completa do Game.cpp e Game.hpp**:
+  - Arquitetura unificada para sistemas ECS e não-ECS
+  - Separação clara de responsabilidades entre sistemas
+  - Melhor organização de inicialização e shutdown
+- **Sistema de renderização ECS**:
+  - RenderSystem agora usa Graphics::Renderer em vez de sf::RenderTarget
+  - Suporte a ordenação por layers de renderização
+  - Visualização de debug para entidades ECS
+- **Atualização do fluxo de execução**:
+  - Loop principal agora executa todos os sistemas implementados
+  - Renderização em camadas substitui o "debug shape" único
+  - Sistema de input integrado com todos os sistemas
+- **Melhoria no gerenciamento de memória**:
+  - Uso de unique_ptr para sistemas não-ECS
+  - Limpeza automática na ordem inversa de inicialização
+  - Destruição segura de recursos gráficos
 
 ### Fixed
 - Erros de compilação com VideoMode no SFML 3
@@ -80,6 +120,13 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
    - `Logger::shutdown()` no longer calls `log()` while holding the internal mutex to avoid resource deadlocks during teardown.
  - Tests updated for SFML 3 API:
    - Updated `tests/test_tilemap.cpp` and `tests/test_tilemap_advanced.cpp` to use `sf::IntRect({pos},{size})` and avoid negative index usage.
+- **Problema crítico de arquitetura**: Sistemas ECS implementados mas não conectados
+- **Inconsistência entre sistemas**: Alguns herdavam de System, outros não
+- **RenderSystem não funcional**: Agora recebe e usa o Renderer corretamente
+- **Vazamento de memória potencial**: Adição de shutdown completo para todos os sistemas
+- **Problema de inicialização ordem**: ECS inicializado antes de outros sistemas
+- **Falha na renderização ECS**: Correção no acesso ao registry e componentes
+- **Compatibilidade SFML 3**: Atualização de rotação e transformações
 
 ### Milestones
 - [x] Marco 1 — Fundação Técnica (Engine e Estrutura Base) completo:
@@ -89,6 +136,12 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
   - Sistema de eventos e input funcionando
   - Renderização base com formas e tilemap
   - Editor com estrutura inicial
+- [x] **Marco 2 — Sistemas de Simulação Básica** completo:
+  - Integração ECS funcional no loop principal
+  - Sistemas de energia e água operacionais
+  - Sistema de alertas e overlays visuais
+  - Arquitetura unificada e escalável
+  - Gerenciamento automático de recursos
 
 ### Docs
 - `VISION.md` - Documento de visão completo com editor integrado
@@ -99,9 +152,8 @@ Segue SemVer: MAJOR.MINOR.PATCH (ex.: 0.2.1).
  - `.github/copilot-instructions.md` - Guia conciso para assistentes de IA (adicionado)
 - `GAMEFLOW.md` - Resumo do fluxo de funcionamento do jogo.
 
-
 [0.1.0] - 2024-XX-XX
-Added
+### Added
 - Base funcional do motor gráfico com SFML 3
 - Sistema de aplicação singleton gerenciável
 - Controle de FPS e delta time
